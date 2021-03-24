@@ -38,3 +38,53 @@ vscode.cdn.azure.cn <--------就是左边这个
     6、vscode-pandoc
     7、Markdown pdf
 
+
+
+```plantuml
+@startuml
+
+abstract class AbstractList
+abstract AbstractCollection
+interface List
+interface Collection
+
+List <|-- AbstractList
+Collection <|-- AbstractCollection
+
+Collection <|- List
+AbstractCollection <|- AbstractList
+AbstractList <|-- ArrayList
+
+class ArrayList {
+  Object[] elementData
+  size()
+}
+
+enum TimeUnit {
+  DAYS
+  HOURS
+  MINUTES
+}
+
+annotation SuppressWarnings
+
+@enduml
+```
+```plantuml
+@startuml
+class A {
+{static} int counter
++void {abstract} start(int timeoutms)
++void {abstract} start(Duration timeout)
+}
+note left of A::counter
+  This member is annotated
+end note
+note right of A::"start(int timeoutms)"
+  This method with int
+end note
+note right of A::"start(Duration timeout)"
+  This method with Duration
+end note
+@enduml
+```
