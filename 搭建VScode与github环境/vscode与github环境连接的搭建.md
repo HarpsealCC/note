@@ -77,6 +77,9 @@ drwxr-xr-x 1 pachina pachina 4096 Mar 25 14:14 ../
 先删除以防其他链接占用
 git remote rm origin
 之后执行
-git remote add origin https://username:password@github.com/username/nihao.git
-上面的url地址是在github上建立远端仓库时的ssh地址，一般在
+git remote add origin git@github.com/username/nihao.git
+上面的url地址是在github上建立远端仓库时的ssh地址，一般在下载代码时候就能看到
+之后执行
+git remote -v
+如果有打印的话就是已经建立连接了，之后就可以使用vscode对文本进行提交
 ```
