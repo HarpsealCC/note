@@ -83,3 +83,8 @@ git remote add origin git@github.com/username/nihao.git
 git remote -v
 如果有打印的话就是已经建立连接了，之后就可以使用vscode对文本进行提交
 ```
+
+
+**需要注意：**
+
+用WSL建立连接时，本地仓库要建立到WSL用户的根目录下，不能建立在window的文件系统下，否则建立连接之后提交会报权限不正确之类的问题。
