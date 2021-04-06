@@ -298,6 +298,22 @@ leader选举结束后，由新的leader行使职能
 ```
 <br>
 
+```plantuml
+@startmindmap
+*[#Orange]: (Manager)PU6
+如果是重复任务
+则当所有子任务完成后
+由Manager再次进行子任务分配;
+++[#lightblue] PU1(monitor)
+--[#lightgreen] PU2（第二次子任务2）
+-- PU3
+--[#lightgreen] PU4（第二次子任务3）
+++ PU5
+++[#lightgreen] PU7(第二次子任务1)
+@endmindmap
+```
+<br>
+
 不同的任务Manager节点可以不同，各自维护属于自己的主任务逻辑
 ```plantuml
 @startmindmap
@@ -329,14 +345,14 @@ monitor不做处理;
 ```
 <br>
 
+如果离线节点下存在manager任务，monitor节点会将其进行重分配
 ```plantuml
 @startmindmap
 *[#lightblue]: PU1(monitor)
 每小时执行一次重分配检测
 检测到PU6离线
-将Manager重新分配到该PC的其他节点中
-如果该PC下没有在线节点，此任务cancel;
--- PU2 
+将Manager重新分配到PU2;
+--[#orange] (Manager)PU2
 --[#lightgreen]  PU3（子任务1）
 --[#lightgreen]  PU4 (子任务2)
 ++[#lightgreen]  PU5 (子任务3) 
@@ -344,3 +360,277 @@ monitor不做处理;
 ++ PU7
 @endmindmap
 ```
+如果没有满足的重分配节点（基本上就是整个pc下线了这个情景），那么这个任务会被标记为cancel
+
+<br>
+
+
+```plantuml
+@startsalt
+{
+{T
+ + <color:red>cluster.compact
+ ++ Compaction_v2
+ +++ Scheduler
+ ++++ MainTask1 Id
+ +++++ TaskState
+ +++++ TaskInfo File
+ ++++ MainTask2 Id
+ +++++ TaskState
+ +++++ TaskInfo File
+ ++++ ......
+ ++++ Compress
+ +++++ Time1 Compressfile
+ +++++ Time2 Compressfile
+ +++++ .......
+ +++ TaskAssigned
+ ++++ PUID1_InterPort
+ +++++ SubtaskID1
+ ++++++ TaskState
+ ++++++ TaskInfo File
+ +++++ SubtaskID2
+ ++++++ TaskState
+ ++++++ TaskInfo File
+ +++++ ......
+ ++++ PUID2_InterPort
+ +++++ SubtaskID3
+ +++++ ......
+}
+}
+@endsalt
+```
+<br>
+
+```plantuml
+@startyaml
+CompactTaskId: "taskid"
+CompactTaskState: "state"
+bool: repeat_flag
+bool: sub_task_flag
+RepeatInfo: 
+	int: repeatCount
+	int: repeatInterval
+ResulttInfo:
+	int: successCount
+	int: failedCount
+string: db_name
+string: schema_name
+string: table_name
+string: partition_name
+@endyaml
+```
+<br>
+
+重构前的任务文件目录结构
+```plantuml
+@startsalt
+{
+{T
+ + <color:red>cluster.compact
+ ++ Compaction
+ +++ Scheduler
+ ++++ compct.xcloud24_9876.0.1617693156000 (init状态任务1)
+ ++++ compct.xcloud24_9876.0.1617606756000.Assigned (Assigned状态任务2)
+ ++++ compct.xcloud24_9876.0.1614928356000.Cancel (Cancel状态任务3)
+ ++++ compct.xcloud24_9876.0.1583392356000.Done (Done状态任务4)
+ +++ TaskAssigned
+ ++++ xcloud24_9876
+ +++++ compct.xcloud24_9876.1.1617606756000
+ ++++++ Status.Success
+ ++++++ TaskInfo
+ +++++ xcloud25_9876
+ ++++++ .....
+ ++++ .....
+}
+}
+@endsalt
+```
+<br>
+
+升级之后预期的任务文件目录结构
+```plantuml
+@startsalt
+{
+{T
+ + <color:red>cluster.compact
+ ++ Compaction
+ +++ Scheduler
+ ++++ compct.xcloud24_9876.0.1617693156000 (init状态任务1)
+ ++++ compct.xcloud24_9876.0.1617606756000.Assigned (Assigned状态任务2)
+ ++++ compct.xcloud24_9876.0.1614928356000.Cancel (Cancel状态任务3)
+ ++++ compct.xcloud24_9876.0.1583392356000.Done (Done状态任务4)
+ +++ TaskAssigned
+ ++++ xcloud24_9876
+ +++++ compct.xcloud24_9876.1.1617606756000
+ ++++++ Status.Success
+ ++++++ TaskInfo
+ +++++ xcloud25_9876
+ ++++++ .....
+ ++++ .....
+ ++ Compation_V2
+ +++ TaskUpgradeLock
+ ++++ compct.xcloud24_9876.0.1617693156000.lock
+ ++++ compct.xcloud24_9876.0.1617606756000.Assigned.lock
+ ++++ compct.xcloud24_9876.0.1614928356000.Cancel.lock
+ ++++ compct.xcloud24_9876.0.1583392356000.Done.lock
+ +++ Scheduler
+ ++++ aaaaffff.16176931.56000000.0 (升级后的任务1)
+ +++++ Status.Init
+ +++++ TaskInfo.pc.db
+ ++++ aaaaffff.16176067.56000000.0 (升级后的任务2)
+ +++++ Status.Init
+ +++++ TaskInfo.pc.db
+ ++++ aaaaffff.16149283.56000000.0 (升级后的任务3)
+ +++++ Status.Cancel
+ +++++ TaskInfo.pc.db
+ ++++ aaaaffff.15833923.56000000.0 (升级后的任务4)
+ +++++ Status.Done
+ +++++ TaskInfo.pc.db
+ +++ TaskAssigned
+ ++++ xcloud24_9876
+ +++++ ....
+}
+}
+@endsalt
+```
+<br>
+
+```plantuml
+@startuml
+
+start
+:升级任务sql;
+:获取旧任务文件列表;
+repeat: 处理文件
+if (该任务是否升级完毕?) then (yes)
+  break;
+else (no)
+  :读取旧任务信息;
+  :在新文件目录下创建对应的任务文件;
+  :将旧任务文件上锁;
+endif
+backward:下一个任务文件;
+repeat while (是否是最后一个文件?)is(no) not(yes)
+
+:任务升级结束;
+stop
+
+@enduml
+```
+<br>
+
+下发升级指令前
+```plantuml
+@startsalt
+{
+{T
+ + <color:red>cluster.compact
+ ++ Compaction
+ +++ Scheduler
+ ++++ compct.xcloud24_9876.0.1617693156000 
+ +++ TaskAssigned
+ ++++ xcloud24_9876
+ ++ Compaction_V2
+ +++ Scheduler
+ +++ TaskAssigned
+}
+}
+@endsalt
+```
+<br>
+
+下发升级指令-读取旧任务，创建新任务
+```plantuml
+@startsalt
+{
+{T
+ + <color:red>cluster.compact
+ ++ Compaction
+ +++ Scheduler
+ ++++ compct.xcloud24_9876.0.1617693156000 
+ +++ TaskAssigned
+ ++++ xcloud24_9876
+ ++ Compaction_V2
+ +++ Scheduler
+ ++++ aaaaffff.16176931.56000000.0 
+ +++++ Status.Init
+ +++++ TaskInfo.pc.db
+ +++ TaskAssigned
+}
+}
+@endsalt
+```
+<br>
+
+下发升级指令-任务创建完成后将旧任务锁住
+```plantuml
+@startsalt
+{
+{T
+ + <color:red>cluster.compact
+ ++ Compaction
+ +++ Scheduler
+ ++++ compct.xcloud24_9876.0.1617693156000 
+ +++ TaskAssigned
+ ++++ xcloud24_9876
+ ++ Compaction_V2
+ +++ TaskUpgradeLock
+ ++++ compct.xcloud24_9876.0.1617693156000.lock （hdfs锁）
+ +++ Scheduler
+ ++++ aaaaffff.16176931.56000000.0 
+ +++++ Status.Init
+ +++++ TaskInfo.pc.db
+ +++ TaskAssigned
+}
+}
+@endsalt
+```
+<br>
+
+升级之后预期的任务文件目录结构
+```plantuml
+@startsalt
+{
+{T
+ + <color:red>cluster.compact
+ ++ <s>Compaction
+ +++ <s>Scheduler
+ ++++ <s>compct.xcloud24_9876.0.1617693156000 (init状态任务1)
+ ++++ <s>compct.xcloud24_9876.0.1617606756000.Assigned (Assigned状态任务2)
+ ++++ <s>compct.xcloud24_9876.0.1614928356000.Cancel (Cancel状态任务3)
+ ++++ <s>compct.xcloud24_9876.0.1583392356000.Done (Done状态任务4)
+ +++ <s>TaskAssigned
+ ++++ <s>xcloud24_9876
+ +++++ <s>compct.xcloud24_9876.1.1617606756000
+ ++++++ <s>Status.Success
+ ++++++ <s>TaskInfo
+ +++++ <s>xcloud25_9876
+ ++++++ .....
+ ++++ .....
+ ++ Compation_V2
+ +++ <s>TaskUpgradeLock
+ ++++ <s>compct.xcloud24_9876.0.1617693156000.lock
+ ++++ <s>compct.xcloud24_9876.0.1617606756000.Assigned.lock
+ ++++ <s>compct.xcloud24_9876.0.1614928356000.Cancel.lock
+ ++++ <s>compct.xcloud24_9876.0.1583392356000.Done.lock
+ +++ Scheduler
+ ++++ aaaaffff.16176931.56000000.0 (升级后的任务1)
+ +++++ Status.Init
+ +++++ TaskInfo.pc.db
+ ++++ aaaaffff.16176067.56000000.0 (升级后的任务2)
+ +++++ Status.Init
+ +++++ TaskInfo.pc.db
+ ++++ aaaaffff.16149283.56000000.0 (升级后的任务3)
+ +++++ Status.Cancel
+ +++++ TaskInfo.pc.db
+ ++++ aaaaffff.15833923.56000000.0 (升级后的任务4)
+ +++++ Status.Done
+ +++++ TaskInfo.pc.db
+ +++ TaskAssigned
+ ++++ xcloud24_9876
+ +++++ ....
+}
+}
+@endsalt
+```
+<br>
