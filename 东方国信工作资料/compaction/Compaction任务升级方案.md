@@ -135,15 +135,41 @@ else (no)
         repeat:进行升级 
             if (该任务是否升级完毕?) then (yes)
             else (no)
-                :读取旧任务信息;
-                :在新文件目录下创建对应的任务文件;
-                :将旧的任务文件标志为已经升级过了;
+                : *升级任务;
             endif
             backward:下一个任务文件;
         repeat while (是否是最后一个文件?)is(no) not(yes)
     :全部任务升级完成;
     :解除任务锁，任务升级结束;
     stop
+
+@enduml
+```
+<br>
+
+任务升级具体文件操作
+```plantuml
+@startuml
+
+start
+
+if(是否上次升级失败)then(yes)
+:读取标志文件上的节点信息;
+:清除上次升级遗留的文件; 
+else(no)
+endif
+:读取旧任务信息;
+:通过schema获取pc;
+if(PC合法？)then(no) 
+    :cancel任务;
+    stop
+else(yes)
+    :创建出标志文件，后缀为任务执行节点信息;
+    :创建任务的managerfile;
+    :创建任务的maintaskinfo;
+    :将标志文件重命名，后缀为upgrade;
+    
+stop
 
 @enduml
 ```
@@ -297,3 +323,427 @@ else (no)
 @endsalt
 ```
 <br>
+
+升级任务后PC信息的指定方式
+```plantuml
+@startmindmap
+* PC信息的指定方式
+++ 通过schema查询PC来使用资源
++++ schema有单个PC的权限
+++++ 使用该PC来执行任务
++++ schema有多PC的权限
+++++ 随机选取一个PC来执行任务
++++ schema没有PC的权限
+++++ 集群存在PC
++++++ 该任务cancel
+++++ 集群不存在pc
++++++ 可以使用所有节点资源
++++ 查询不到schema
+++++ 任务cancel
+
+++[#pink] 通过入口节点所在的PC来分配资源
++++ 入口节点被分配到进程组
+++++ 使用该进程组资源执行
++++ 入口节点未被分配的进程组
+++++ 使用未分配到进程组的资源执行
++++ 入口节点被卸载
+++++ 任务被cancel
+++++ 希望继续执行，任务被重分配
+@endmindmap
+```
+<br>
+
+任务升级方案思维导图
+```plantuml
+@startmindmap
+* 任务功能
+++ 需要实现的功能
++++ 任务升级
+++++ 将重构前的任务升级到新的任务系统中
+++++ 清理重构前的任务
+++++ 升级中断后通过再次执行可以继续升级
+
+++ 功能执行方法
++++ 采用GMC指令进行在线升级
++++ 使用离线工具进行离线升级
+@endmindmap
+```
+<br>
+
+旧任务内容：
+```plantuml
+@startyaml
+CompactTaskId: "taskid"
+CompactTaskState: "state"
+bool: repeat_flag
+bool: sub_task_flag
+RepeatInfo: 
+	int: repeatCount
+	int: repeatInterval
+ResultInfo:
+	int: successCount
+	int: failedCount
+string: db_name
+string: schema_name
+string: table_name
+string: partition_name
+@endyaml
+```
+<br>
+
+新任务内容：
+```plantuml
+@startyaml
+CompactTaskId: "taskid" （任务id需升级）
+CompactTaskState: "state"
+bool: repeat_flag
+bool: sub_task_flag
+bool: sync_task_flag（新元素，升级而来的任务都是false）
+CompactOptimization:
+	string:db_name
+	string:pc_name
+RepeatInfo: 
+	int: repeatCount
+	int: repeatInterval
+ResultInfo:
+	int: successCount
+	int: failedCount
+string: db_name
+string: schema_name
+string: table_name
+string: partition_name
+string: pc_name （新元素，需要指定）  
+@endyaml
+```
+
+<br>
+
+任务升级失败方案思维导图
+```plantuml
+@startmindmap
+* 任务执行
+++ 任务执行失败
++++ 在读取时失败
+++++ 无影响
++++ 在创建mgrfile过程或之后失败
+++++ 再次执行时
++++++ id有对照关系的话就删除
++++++ id没有对照关系的话系统可以自己解决
++++ 创建mgrfile成功但是创建maininfo失败
+++++ 可以删除之后再创建
+
+@endmindmap
+<br>
+
+```plantuml
+@startuml
+package "cirrodata" {
+[cirrodata-tool] as tool
+}
+package "hadoop" {
+[HDFS] as hdfs
+}
+
+[Zookeeper] as zookeeper
+tool ..> hdfs:use hdfs api
+tool ..> zookeeper:use zookeeper api
+shell . tool
+@enduml
+```
+<br>
+
+```plantuml
+@startuml
+package "cirrodata" {
+[cirrdatatool-compaction-upgrade] as upgrade
+[PUCtrl] as PUCtrl
+[Compactionfilehelper] as filehelper
+[zkadapter] as zkadapter
+[HdfsAccessService] as hdfsa
+hdfs_operation - hdfsa  
+filehelper - hdfs_operation
+upgrade -- file_operation
+file_operation -- filehelper
+get_puinfo - upgrade
+PUCtrl - get_puinfo
+zkhelp -- PUCtrl
+zkadapter -- zkhelp 
+zkadapter -- zklock
+zklock -- upgrade
+}
+package "hadoop" {
+[HDFS] as hdfs
+}
+
+[Zookeeper] as zookeeper
+hdfs <.. hdfsa :use hdfs api
+zookeeper <.. zkadapter :use zookeeper api
+upgrade . shell
+@endum
+```
+<br>
+
+启动离线工具进行任务升级
+```plantuml
+@startuml
+用户-> cirrodatatool : 启动工具
+cirrodatatool -> Compactionfilehelper : 检测是否进行升级
+cirrodatatool <- Compactionfilehelper : 反馈检测结果
+cirrodatatool -> zkadapter : 添加锁
+cirrodatatool -> Compactionfilehelper : 获取待升级的文件列表
+cirrodatatool <- Compactionfilehelper : 反馈结果
+loop 文件个数
+    cirrodatatool -> Compactionfilehelper : 进行任务文件升级
+end
+cirrodatatool -> Compactionfilehelper : 全部任务文件升级完成
+cirrodatatool -> zkadapter : 取消锁
+用户 <- cirrodatatool : 反馈任务完成
+@enduml
+```
+
+<br>
+
+启动离线工具进行任务删除
+```plantuml
+@startuml
+用户-> cirrodatatool : 启动工具
+cirrodatatool -> zkadapter : 添加锁
+cirrodatatool -> Compactionfilehelper : 删除旧任务文件
+cirrodatatool -> zkadapter : 取消锁
+用户 <- cirrodatatool : 反馈任务完成
+@enduml
+```
+<br>
+
+cirrdatatool-compaction-upgrade二级模块
+```plantuml
+@startuml
+skinparam classAttributeIconSize 0
+class ToolDispatch {
+    +void Dispatch(const std::string tool_name)
+}
+abstract class ToolAdapter {
+    {abstract}void Init()
+    {abstract}void Excu()
+    {abstract}void Release()
+}
+class ComptaskUpgradeAdapter {
+    +void Init()
+    +void Excu()
+    +void Release()
+    -void Excute(TaskUpgrade, OP_TYPE)
+    -  checkOptition(std::string op)
+    -bool CheckAllOffline()
+    -void ShowUsage()
+}
+class TaskUpgrade {
+    +void UpdateTaskFromOld()
+    +void DeleteOldTask()
+    -void SetLock()
+    -void ReleaseLock()
+}
+enum OP_TYPE {
+    STATUS = 0,
+    UPGRADE,
+    RECOVERY,
+    DELETE,
+    INVALID
+}
+ToolAdapter <|-- ComptaskUpgradeAdapter
+ToolDispatch <-- ToolAdapter
+ComptaskUpgradeAdapter <- TaskUpgrade
+OP_TYPE -> ComptaskUpgradeAdapter
+@enduml
+```
+<br>
+
+任务升级运行视图
+```plantuml
+@startuml
+activate ToolDispatch
+ToolDispatch-> ToolDispatch : 注册ComptaskUpgradeAdapter
+ToolDispatch -> ComptaskUpgradeAdapter :  Init
+activate ComptaskUpgradeAdapter
+ComptaskUpgradeAdapter -> PUCtrl : CheckAllOffline
+ToolDispatch -> ComptaskUpgradeAdapter :  Excu
+ComptaskUpgradeAdapter -> ComptaskUpgradeAdapter : checkOptition
+ComptaskUpgradeAdapter -> TaskUpgrade : Excute
+activate TaskUpgrade
+alt UPGRADE
+TaskUpgrade -> TaskUpgrade:UpdateTaskFromOld
+else DELETE
+TaskUpgrade -> TaskUpgrade:DeleteOldTask
+end
+TaskUpgrade -> ComptaskUpgradeAdapter: exit
+ComptaskUpgradeAdapter -> ToolDispatch : exit
+ToolDispatch -> ComptaskUpgradeAdapter: release
+@enduml
+```
+<br>
+
+compaction_file_helper二级模块
+```plantuml
+@startuml
+skinparam classAttributeIconSize 0
+class TaskUpgrade {
+	-CompManagerFileHelper* managerfile_helper_
+    -CompMainTaskFileHelper* maintaskfile_helper_
+    -CompMainTaskFileHelperV1* maintaskfile_v1_helper_
+    +void UpdateTaskFromOld()
+    +void DeleteOldTask()
+    -void SetLock()
+    -void ReleaseLock()
+}
+class CompMainTaskFileHelperV1 {
+	-hdfsa::IHdfsAccessService* hdfs_
+	CompactTaskState GetTaskStateFromFileName()
+	bool GetMainTaskInfo()
+	bool GetAllMainTaskFromScheduler()
+	void ClearAllTaskV1File()
+}
+class CompMainTaskFileHelper {
+	-hdfsa::IHdfsAccessService* hdfs_
+	bool CreateMainTask()
+	bool DeleteMaintask()
+
+}
+class CompManagerFileHelper {
+	-hdfsa::IHdfsAccessService* hdfs_
+	bool CreateMaintaskMgr()
+	bool DeleteMaintaskMgr()
+}
+Class CompactMainTaskInfoV1 {
+void UpgradeMainTaskInfo()
+}
+Class CompactMainTaskInfoV2 {
+
+}
+Class UpgradeMarkFileHelper {
+	-hdfsa::IHdfsAccessService* hdfs_
+	void MarkUpgradingFile()
+	void MarkUpgradedFile()
+	bool IfUpgraded()
+	void UnMarkUpgradeFile()
+	void MarkAllFileUpgrade()
+	void ClearAllFileUpgradeMark()
+}
+  
+TaskUpgrade .> CompMainTaskFileHelper
+TaskUpgrade ..> CompManagerFileHelper
+UpgradeMarkFileHelper <. TaskUpgrade
+CompMainTaskFileHelperV1 <.. TaskUpgrade
+CompMainTaskFileHelperV1 .> CompactMainTaskInfoV1
+CompMainTaskFileHelper .> CompactMainTaskInfoV2
+CompManagerFileHelper .> CompactMainTaskInfoV2
+CompactMainTaskInfoV1 ..> CompactMainTaskInfoV2
+@enduml
+```
+<br>
+
+任务升级运行视图--文件操作
+```plantuml
+@startuml
+activate TaskUpgrade
+alt UPGRADE
+	TaskUpgrade -> TaskUpgrade: UpdateTaskFromOld
+	activate TaskUpgrade
+	TaskUpgrade -> CompMainTaskFileHelperV1 : GetAllMainTaskFromScheduler
+	CompMainTaskFileHelperV1 -> TaskUpgrade : all maintask filelist
+	loop filelist
+		TaskUpgrade -> UpgradeMarkFileHelper : IfUpgraded
+		UpgradeMarkFileHelper -> TaskUpgrade : result
+		alt Unupgrade
+			TaskUpgrade->CompMainTaskFileHelperV1 : GetMainTaskInfo
+			TaskUpgrade<-CompMainTaskFileHelperV1 : task info
+			activate TaskUpgrade
+			TaskUpgrade -> CompactMainTaskInfoV1 : UpgradeMainTaskInfo
+			deactivate TaskUpgrade
+			TaskUpgrade -> CompMainTaskFileHelper : CreateMainTask
+			alt Init Running
+				TaskUpgrade -> CompManagerFileHelper : CreateMaintaskMgr
+			end
+		else Upgrade	
+		end
+	end
+	deactivate TaskUpgrade
+else DELETE
+	TaskUpgrade -> TaskUpgrade: DeleteOldTask
+	activate TaskUpgrade
+	TaskUpgrade -> CompMainTaskFileHelperV1 : DeleteAllTask
+	TaskUpgrade -> UpgradeMarkFileHelper : ClearAllFileUpgradeMark
+end
+@enduml
+```
+
+
+<br>
+
+任务升级运行视图--公共数据类型
+```plantuml
+@startuml
+object CompactTaskId {
+	std::string：query_id_
+	int：sequence_no_
+}
+object CompactTaskIdV1 {
+    std::string m_receive_pu
+    int m_sequence_no
+    uint64_t m_receive_ts
+}
+object ResultInfo {
+    uint m_successCount
+    uint m_failedCount
+}
+object RepeatInfo {
+    int m_repeatCount
+    int m_repeatInterval
+}
+object CompactOptimization {
+    std::string db_name_
+    std::string pc_name_
+}
+object TaskMemo {
+    int64_t compact_filesize_threshold
+    int compact_group_num
+}
+object CompactTaskInfoDataV1 {
+    CompactTaskIdV1 _task_id
+    CompactTaskState _state
+    bool _repeat_flag
+    bool _sub_task_flag
+    RepeatInfo _repeat_info
+    ResultInfo _result_info
+    std::string _db_name
+    std::string _schema_name
+    std::string _table_name
+    std::string _partition_name
+}
+object CompactTaskInfoDataV2 {
+    CompactTaskId task_id
+    std::string receive_pu
+    CompactTaskState state
+    CompactOptimization optimizat
+    bool repeat_flag
+    bool sub_task_flag
+    bool sync_task_flag
+    RepeatInfo repeat_info
+    ResultInfo result_info
+    std::string db_name
+    std::string schema_name
+    std::string table_name
+    std::string partition_name
+    std::string pc_name
+    std::string executenode
+    TaskMemo memo
+}
+CompactTaskInfoDataV1 -> CompactTaskIdV1
+CompactTaskInfoDataV1 --> ResultInfo
+CompactTaskInfoDataV1 --> RepeatInfo
+CompactTaskId <-- CompactTaskInfoDataV2
+ResultInfo <-- CompactTaskInfoDataV2
+RepeatInfo <-- CompactTaskInfoDataV2
+CompactTaskInfoDataV2 -> CompactOptimization
+TaskMemo <- CompactTaskInfoDataV2 
+@enduml
+
+```
