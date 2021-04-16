@@ -121,6 +121,9 @@
 @startuml
 
 start
+:程序启动;
+:确定行云进程状态;
+:添加任务锁，只允许一个节点进行任务升级;
 :开始升级任务;
 if(所有任务全部升级完成？) then(yes)
 :提示所有任务已经升级完成;
@@ -131,7 +134,6 @@ else (no)
     :提示没有任务需要升级;
     stop
     else (no)
-        :添加任务锁，只允许一个节点进行任务升级;
         repeat:进行升级 
             if (该任务是否升级完毕?) then (yes)
             else (no)
@@ -394,14 +396,14 @@ string: partition_name
 新任务内容：
 ```plantuml
 @startyaml
-CompactTaskId: "taskid" （任务id需升级）
+CompactTaskId: "taskid" (任务id需要进行修改) 
 CompactTaskState: "state"
 bool: repeat_flag
 bool: sub_task_flag
 bool: sync_task_flag（新元素，升级而来的任务都是false）
 CompactOptimization:
-	string:db_name
-	string:pc_name
+	string:db_name（新元素）
+	string:pc_name（新元素）
 RepeatInfo: 
 	int: repeatCount
 	int: repeatInterval
@@ -444,10 +446,15 @@ package "hadoop" {
 [HDFS] as hdfs
 }
 
+package "metadata" {
+[HDFSMetaQueryProxy] as	Meta
+}
+
 [Zookeeper] as zookeeper
 tool ..> hdfs:use hdfs api
 tool ..> zookeeper:use zookeeper api
-shell . tool
+tool .> Meta : use metadata api
+shell .. tool
 @enduml
 ```
 <br>
@@ -460,6 +467,7 @@ package "cirrodata" {
 [Compactionfilehelper] as filehelper
 [zkadapter] as zkadapter
 [HdfsAccessService] as hdfsa
+[MetaDataService] as metaservice
 hdfs_operation - hdfsa  
 filehelper - hdfs_operation
 upgrade -- file_operation
@@ -470,14 +478,19 @@ zkhelp -- PUCtrl
 zkadapter -- zkhelp 
 zkadapter -- zklock
 zklock -- upgrade
+metaservice -- get_table_info
+get_table_info -- upgrade
 }
 package "hadoop" {
 [HDFS] as hdfs
 }
-
+package "metadata" {
+[HDFSMetaQueryProxy] as	Meta
+}
 [Zookeeper] as zookeeper
 hdfs <.. hdfsa :use hdfs api
 zookeeper <.. zkadapter :use zookeeper api
+Meta <.. metaservice: use meta service api
 upgrade . shell
 @endum
 ```
@@ -494,6 +507,7 @@ cirrodatatool -> Compactionfilehelper : 获取待升级的文件列表
 cirrodatatool <- Compactionfilehelper : 反馈结果
 loop 文件个数
     cirrodatatool -> Compactionfilehelper : 进行任务文件升级
+	cirrodatatool -> MetaDataServiece : 查询schema信息
 end
 cirrodatatool -> Compactionfilehelper : 全部任务文件升级完成
 cirrodatatool -> zkadapter : 取消锁
@@ -535,12 +549,12 @@ class ComptaskUpgradeAdapter {
     -  checkOptition(std::string op)
     -bool CheckAllOffline()
     -void ShowUsage()
+    -void SetLock()
+    -void ReleaseLock()
 }
 class TaskUpgrade {
     +void UpdateTaskFromOld()
     +void DeleteOldTask()
-    -void SetLock()
-    -void ReleaseLock()
 }
 enum OP_TYPE {
     STATUS = 0,
@@ -565,6 +579,7 @@ ToolDispatch-> ToolDispatch : 注册ComptaskUpgradeAdapter
 ToolDispatch -> ComptaskUpgradeAdapter :  Init
 activate ComptaskUpgradeAdapter
 ComptaskUpgradeAdapter -> PUCtrl : CheckAllOffline
+ComptaskUpgradeAdapter -> ZKAdapoter: SetLock
 ToolDispatch -> ComptaskUpgradeAdapter :  Excu
 ComptaskUpgradeAdapter -> ComptaskUpgradeAdapter : checkOptition
 ComptaskUpgradeAdapter -> TaskUpgrade : Excute
@@ -575,6 +590,8 @@ else DELETE
 TaskUpgrade -> TaskUpgrade:DeleteOldTask
 end
 TaskUpgrade -> ComptaskUpgradeAdapter: exit
+deactivate TaskUpgrade
+ComptaskUpgradeAdapter -> ZKAdapoter: ReleaseLock
 ComptaskUpgradeAdapter -> ToolDispatch : exit
 ToolDispatch -> ComptaskUpgradeAdapter: release
 @enduml
