@@ -606,6 +606,7 @@ class TaskUpgrade {
 	-CompManagerFileHelper* managerfile_helper_
     -CompMainTaskFileHelper* maintaskfile_helper_
     -CompMainTaskFileHelperV1* maintaskfile_v1_helper_
+    -UpgradeMarkFileHelper* upgrade_markfile_helper
     +void UpdateTaskFromOld()
     +void DeleteOldTask()
     -void SetLock()
