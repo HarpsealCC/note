@@ -6,9 +6,10 @@
 ## 使用
 见
 https://zhuanlan.zhihu.com/p/87053283
-
-
-
+```
+git submodule init
+git submodule update
+```
 
 ## 其他
 ### 修改submodule的clone路径
