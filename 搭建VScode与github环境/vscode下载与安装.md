@@ -34,11 +34,15 @@ vscode.cdn.azure.cn <--------就是左边这个
     2、c/c++
     3、plantuml
     4、Markdown
-    5、Markdown plantuml preview
+    5、Markdown preview Enhanced
     6、vscode-pandoc
     7、Markdown pdf
     8、Remote-SSH
     9、Remote-WSL
+    10、Bracket Pair Colorizer 2
+    11、GitLens — Git supercharged
+    12、tabout
+    13、翻译或者
 
 
 ### 使用环境
