@@ -42,9 +42,10 @@ vscode.cdn.azure.cn <--------就是左边这个
     10、Bracket Pair Colorizer 2
     11、GitLens — Git supercharged
     12、tabout
-    13、翻译或者
+    13、翻译或者comment translate(wsl子系统上使用会有问题)
 
 
 ### 使用环境
 
 vscode可以在window、mac或者linux上运行，考虑到开发与使用的情况，我比较倾向于在window上安装vscode，但是编译与运行环境和插件安装都使用WSL子系统来进行。
+有些插件可能在wsl子系统上无法正常工作
