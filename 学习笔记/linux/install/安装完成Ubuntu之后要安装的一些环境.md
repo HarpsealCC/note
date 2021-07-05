@@ -20,4 +20,67 @@ sudo apt install openjdk-11-jdk  // 安装java
 ```
 sudo apt install subversion  // 安装svn
 ```
+性能相关
+```
+sudo apt install sysstat   // 安装监测系统性能及效率的一组工具
+```
 
+网络相关
+```
+sudo apt install inetutils-traceroute  // 查询路由
+```
+
+调试相关
+```
+sudo apt install gdb  // 安装gdb调试工具
+```
+pstack为依托于gdb的一个脚本，安装了gdb后，ubuntu环境可能没有这个脚本，需要
+```
+vi /usr/bin/pstack  
+```
+将下面的脚本内容复制到/usr/bin/pstack中，并赋予权限 **目前pstack在ubuntu中只能使用sudo pstack使用**
+```
+#!/bin/sh
+
+if test $# -ne 1; then
+    echo "Usage: `basename $0 .sh` <process-id>" 1>&2
+    exit 1
+fi
+
+if test !  -r /proc/$1; then
+    echo "Process $1 not found." 1>&2
+    exit 1
+fi
+
+# GDB doesn't allow "thread apply all bt" when the process isn't
+# threaded; need to peek at the process to determine if that or the
+# simpler "bt" should be used.
+
+backtrace="bt"
+if test -d /proc/$1/task ; then
+    # Newer kernel; has a task/ directory.
+    if test `/bin/ls /proc/$1/task | /usr/bin/wc -l` -gt 1 2>/dev/null ; then
+        backtrace="thread apply all bt"
+    fi
+elif test -f /proc/$1/maps ; then
+    # Older kernel; go by it loading libpthread.
+    if /bin/grep -e libpthread /proc/$1/maps > /dev/null 2>&1 ; then
+        backtrace="thread apply all bt"
+    fi
+fi
+
+GDB=${GDB:-/usr/bin/gdb}
+
+# Run GDB, strip out unwanted noise.
+# --readnever is no longer used since .gdb_index is now in use.
+$GDB --quiet -nx $GDBARGS /proc/$1/exe $1 <<EOF 2>&1 |
+set width 0
+set height 0
+set pagination no
+$backtrace
+EOF
+/bin/sed -n \
+    -e 's/^\((gdb) \)*//' \
+    -e '/^#/p' \
+    -e '/^Thread/p'
+```
