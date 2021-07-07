@@ -14,6 +14,7 @@ git submodule update
 ## 其他
 ### 修改submodule的clone路径
 在一些情况下，submodule的clone方式是用http路径的这样在网络不好的情况下会导致clone工程失败，用ssh的方案能够比较好的的规避这个问题。
+如果有vpn的话，http还是比较方便的，目前主流的路径都使用http
 
 **方法**
 
