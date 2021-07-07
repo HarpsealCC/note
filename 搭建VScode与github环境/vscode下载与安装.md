@@ -34,7 +34,7 @@ vscode.cdn.azure.cn <--------就是左边这个
     2、c/c++
     3、plantuml
     4、Markdown
-    5、Markdown preview Enhanced
+    5、Markdown Plantuml Preview
     6、vscode-pandoc
     7、Markdown pdf
     8、Remote-SSH
