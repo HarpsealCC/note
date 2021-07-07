@@ -100,5 +100,6 @@ ut/
 # 不忽略bin目录下面指定的文件类型
 !./bin/*.txt
 !./bin/*.sh
-
+# 忽略vscode下的配置文件
+# !.vscode/*.json
 ```
