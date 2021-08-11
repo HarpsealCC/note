@@ -1,4 +1,12 @@
 <!--
+ * @Author: your name
+ * @Date: 2021-07-10 11:42:22
+ * @LastEditTime: 2021-07-12 21:10:55
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /note/搭建VScode与github环境/vscode下载与安装.md
+-->
+<!--
  *                        _oo0oo_
  *                       o8888888o
  *                       88" . "88
@@ -84,6 +92,7 @@ vscode.cdn.azure.cn <--------就是左边这个
     16、Bookmarks
     17、koroFileHeader
     18、Switcher
+    19、Git Graph
 
 
 ### 使用环境
