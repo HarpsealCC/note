@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-08-09 11:37:38
- * @LastEditTime: 2021-08-09 11:42:23
+ * @LastEditTime: 2021-12-01 09:53:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /学习笔记/gdb/gdb打印stl.md
@@ -27,3 +27,18 @@ gdb常用打印"p variable-name"，这种方式查看STL容器类，只会显示
 |std::bitset<n>|	pbitset stl_variable|
 |std::string|	pstring stl_variable|
 |std::widestring|	pwstring stl_variable|
+
+
+
+具体用法可以使用 help <指令>来获取 
+```
+e.g
+(gdb) help pmap
+    Prints std::map<TLeft and TRight> or std::multimap<TLeft and TRight> information. Works for std::multimap as well.
+    Syntax: pmap <map> <TtypeLeft> <TypeRight> <valLeft> <valRight>: Prints map size, if T defined all elements or just element(s) with val(s)
+    Examples:
+    pmap m - prints map size and definition
+    pmap m int int - prints all elements and map size
+    pmap m int int 20 - prints the element(s) with left-value = 20 (if any) and map size
+    pmap m int int 20 200 - prints the element(s) with left-value = 20 and right-value = 200 (if any) and map size
+```
