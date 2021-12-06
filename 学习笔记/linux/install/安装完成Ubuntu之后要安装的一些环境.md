@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-12-06 11:35:56
+ * @LastEditTime: 2021-12-06 11:37:07
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: /note/学习笔记/linux/install/安装完成Ubuntu之后要安装的一些环境.md
+-->
 # **linux环境配置（持续更新）**
 
 本文主要介绍刚刚安装完成linux（Ubuntu）系统或者子系统之后需要安装哪些环境
@@ -11,6 +19,9 @@ sudo apt install cmake  // cmake
 
 ```
 java安装
+（一些概念：
+jre：java程序运行时候的依赖环境
+jdk：除了jre外，还有一些额外的开发编译功能）
 ```
 sudo apt install openjdk-11-jdk  // 安装java
 ```
