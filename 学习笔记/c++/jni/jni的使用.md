@@ -73,6 +73,11 @@ javac -cp ./log4j-1.2.17.jar:./protobuf-java-3.9.0.jar:./Protobuftest-0.1.jar:  
 ```
 javap -classpath ./ -s Demo
 ```
+6) 在linux下使用命令打包
+```
+echo Main-class: Demo > manifest.txt
+jar cvfm Demo.jar manifest.txt Demo.class Protobuftest-0.1.jar protobuf-java-3.9.0.jar
+```
 ## **2. C++端**
 1) 创建TestJNI.h文件，内容如下：
 ```
