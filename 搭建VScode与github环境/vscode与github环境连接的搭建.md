@@ -82,6 +82,10 @@ git remote add origin lcz@git.com/lcz/nihao.git
 之后执行
 git remote -v
 如果有打印的话就是已经建立连接了，之后就可以使用vscode对文本进行提交
+最后可以拉取代码
+git pull + ssh地址
+e.g.
+git pull git@github.com:apache/impala.git 
 ```
 
 

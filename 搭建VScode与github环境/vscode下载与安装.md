@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2021-07-10 11:42:22
- * @LastEditTime: 2021-07-12 21:10:55
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-03 18:31:22
+ * @LastEditors: lcz lcz@git.com
  * @Description: In User Settings Edit
  * @FilePath: /note/搭建VScode与github环境/vscode下载与安装.md
 -->
@@ -76,23 +76,23 @@ vscode.cdn.azure.cn <--------就是左边这个
 
     1、Chinese (Simplified) Language Pack for Visual Studio Code
     2、c/c++
-    3、plantuml
-    4、Markdown
-    5、Markdown Plantuml Preview
-    6、vscode-pandoc
-    7、Markdown pdf
-    8、Remote-SSH
-    9、Remote-WSL
-    10、Bracket Pair Colorizer 2
-    11、GitLens — Git supercharged
-    12、tabout
-    13、翻译或者comment translate(wsl子系统上使用会有问题)
-    14、c++ intellisense 
-    15、TODO Tree
-    16、Bookmarks
-    17、koroFileHeader
-    18、Switcher
-    19、Git Graph
+    3、plantuml ：绘制uml图（remote）
+    4、Markdown ：markdown相关组件（remote）
+    5、Markdown Plantuml Preview ：markdown中显示plantuml（remote）
+    6、vscode-pandoc ： 将makedown文件转换成pdf等文件（remote暂时不好使）
+    7、Markdown pdf ： markdown转pdf（remote）
+    8、Remote-SSH ： 登陆ssh（local）
+    9、Remote-WSL ：登陆wsl（local）
+    10、Bracket Pair Colorizer 2 ：括号标记（local）
+    11、GitLens — Git supercharged ：有许多git功能的扩展，如显示提交日期等（remote）
+    12、tabout ：快速跳出括号引号等（remote）
+    13、翻译或者comment translate(wsl子系统上使用会有问题) ：（remote）
+    14、c++ intellisense ：c++的辅助工具（remote） 
+    15、TODO Tree ：显示被标记为todo的待办事件（remote）
+    16、Bookmarks  ：书签功能（remote）
+    17、koroFileHeader  ：自动生成头文件（remote）
+    18、Switcher  ：切换同名文件，如.h与.cpp之间，可以互相切换（remote）
+    19、Git Graph  : 图形显示git提交记录（remote）
 
 
 ### 使用环境
