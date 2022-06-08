@@ -87,8 +87,10 @@ git pull + ssh地址
 e.g.
 git pull git@github.com:apache/impala.git 
 ```
-
-
+* 可以添加一些配置
+```
+如配置.gitignore等，文件相关的说明存放在 “学习笔记/git/配置文件/gitignore配置.md”
+```
 **需要注意：**
 
 用WSL建立连接时，本地仓库要建立到WSL用户的根目录下，不能建立在window的文件系统下，否则建立连接之后提交会报权限不正确之类的问题。
