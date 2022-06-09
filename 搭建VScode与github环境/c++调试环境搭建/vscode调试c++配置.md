@@ -18,44 +18,63 @@ gdb  : sudo apt-get install gdb
 
 ### 建立配置文件
 
-接下来在该目录下建立文件夹.vscode，并在文件中新建文件launch.json和task.json
+接下来在该目录下建立文件夹.vscode，并在文件中新建文件c_cpp_properties.json和launch.json
+
+* c_cpp_properties.json
+好像不用写这个文件也可以调试。。。。
+```
+ctrl+shift+p
+输入
+edit
+选择c++ edit Configurations(json)
+建立c_cpp_properties.json
+
+在"includePath"中，
+输入头文件的路径
+```
 
 * launch.json
-将下面的信息写入到文件中
+在调用debug功能时如果没有会自动生成一个初始文件，将下面的信息写入到文件中
+
+```
+需要的修改：
+program：路径设置为为cmake make 编译的可执行程序；
+cwd：设置为${workspaceFolder}
+注释掉"preLaunchTask"，大概是因为不用预编译，已经用cmake make 编译完成了
+```
 ```
 {
-    // 使用 IntelliSense 了解相关属性。 
-    // 悬停以查看现有属性的描述。
-    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "preLaunchTask": "build", //调试会话开始前执行的任务，一般为编译程序。与tasks.json的label相对应
-            "name": "(gdb) Debug",       //配置文件的名字，可以随便起
-            "type": "cppdbg",           //调试的类型，Vscode现在支持很多，我这里主要是C，所以只能是cppdbg
-            "request": "launch",        //配置文件的请求类型，有launch和attach两种，具体看官方文档
-            "targetArchitecture": "x64", //硬件内核架构，为64bit，如图设置
-            "program": "${workspaceFolder}/${fileBasenameNoExtension}",   //可执行文件的路径和文件名称
-            "args": [],                 //主函数调用时传入的参数
-            "stopAtEntry": false,       //设为true时程序将暂停在程序入口处
-            "cwd": "${workspaceFolder}",    //调试时的工作目录
-            "environment": [],          //不知道干嘛的
-            "internalConsoleOptions": "openOnSessionStart",
-            "externalConsole": false,   //调试时是否显示控制台窗口
-            "MIMode": "gdb",            //指定连接的调试器，可以省略不写
+            "name": "g++ - Build and debug active file",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bin/main",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
             "setupCommands": [
                 {
-                    "description": "为 gdb 启用整齐打印",
+                    "description": "Enable pretty-printing for gdb",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
                 }
-            ]
+            ],
+            //"preLaunchTask": "C/C++: g++ build active file",
+            "miDebuggerPath": "/usr/bin/gdb"
         }
     ]
 }
 ```
-* task.json
-如果调试C++，将下面command配置成g++。
+* task.json（目前不需要配置）
+此文件可能是需要直接编译cpp文件，如果有编译成功的可执行文件用来调试，可以不用配置这个文件，如果调试C++，将下面command配置成g++。
 ```
 {
     // See https://go.microsoft.com/fwlink/?LinkId=733558

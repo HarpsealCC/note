@@ -67,6 +67,8 @@ ut/
 !*.c
 !*.sh
 !*.txt
+# 可能有一些vscode的配置文件
+!*.json  
 ```
 
 ## **个人日常使用的测试代码的gitignore**
