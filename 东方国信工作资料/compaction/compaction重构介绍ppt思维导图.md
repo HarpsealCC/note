@@ -422,3 +422,95 @@ string: partition_name
 ```
 <br>
 
+
+## Compaction模块添加小数据归档相关校验
+
+```plantuml
+@startmindmap
+* SQL下发
+** Cmd第一次校验
+*** 分区校验不过sql报错
+*** 校验通过，生成子任务时第二次校验
+**** 校验不过
+***** 部分校验不过，不过的子任务不创建
+***** 全都不过，cancel主任务
+**** 校验通过，做子任务前最后校验
+***** 校验不过，子任务false
+***** 正常
+
+@endmindmap
+```
+
+
+## Compaction业务部分类图
+
+```plantuml
+@startuml
+package "Service" {
+[ICompactionService]
+[CompactionService] -up-|> [ICompactionService]
+}
+
+package "TaskMgr" {
+[ICFCompactionTaskListener]
+[CFCompactionTaskListener] -up-|> [ICFCompactionTaskListener]
+[CFWDCompactionTaskListener] -up-|> [ICFCompactionTaskListener]
+[TaskQueueHandle]
+[CompactionTaskQueue]
+[DataPackCompactor]
+[ParquetPartitionCompactor]
+[ParquetSliceCompactor]
+
+[CFCompactionTaskListener] -->[TaskQueueHandle] : use
+[TaskQueueHandle] -> [CompactionTaskQueue] : use
+[CompactionTaskQueue] --> [DataPackCompactor]
+[DataPackCompactor] -> [ParquetPartitionCompactor]
+[ParquetPartitionCompactor] --> [ParquetSliceCompactor]
+} 
+[CompactionService] -down-> [CFCompactionTaskListener]
+package "Trans" {
+[CompactTrans]
+[HdfsSpace]
+[CompactTrans] --> [HdfsSpace]
+}
+[DataPackCompactor] --> [CompactTrans]
+
+@enduml
+```
+
+
+```plantuml
+@startuml
+package "dpCompactor" {
+[SimpleCompactor]
+[SimpleLobCompactor]
+[SimpleCompactor] --> [AdjustableCompactPlanner]
+[SimpleLobCompactor] --> [AdjustableCompactPlanner]
+[AdjustableCompactPlanner] --> [UpdatePriorCompactGroupRule]
+[AdjustableCompactPlanner] --> [LobConsideredCompactGroupRule]
+}
+
+package "dataparquet" {
+[ParquetFileScanner]
+[ParquetDPWriter]
+}
+package "lob" {
+[Compactor]
+}
+[SimpleLobCompactor] -up-> [Compactor]
+
+[SimpleCompactor] -up-> [ParquetFileScanner]
+[SimpleCompactor] -up-> [ParquetDPWriter]
+@enduml
+```
+
+## 旧任务升级
+
+```plantuml
+@startuml
+package "dpCompactor" {
+[ComptaskUpgradeAdapter]
+
+}
+
+@enduml
