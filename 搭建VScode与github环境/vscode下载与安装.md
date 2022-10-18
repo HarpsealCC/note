@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-07-10 11:42:22
- * @LastEditTime: 2022-10-17 11:42:38
+ * @LastEditTime: 2022-10-18 15:05:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /github/harpseal/搭建VScode与github环境/vscode下载与安装.md
@@ -93,7 +93,7 @@ vscode.cdn.azure.cn <--------就是左边这个
     17、koroFileHeader  ：自动生成头文件（remote）
     18、Switcher  ：切换同名文件，如.h与.cpp之间，可以互相切换（remote）
     19、Git Graph  : 图形显示git提交记录（remote）
-    20、Markdown Image：方便地在 Markdown 中插入图片，支持本地、图床或对象存储
+    20、Markdown Image：方便地在 Markdown 中插入图片，支持本地、图床或对象存储（remote暂时不好使）
 
 ### 使用环境
 
