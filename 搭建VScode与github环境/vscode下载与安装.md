@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-07-10 11:42:22
- * @LastEditTime: 2022-10-18 15:05:42
+ * @LastEditTime: 2023-01-09 10:38:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /github/harpseal/搭建VScode与github环境/vscode下载与安装.md
@@ -99,3 +99,5 @@ vscode.cdn.azure.cn <--------就是左边这个
 
 vscode可以在window、mac或者linux上运行，考虑到开发与使用的情况，我比较倾向于在window上安装vscode，但是编译与运行环境和插件安装都使用WSL子系统来进行。
 有些插件可能在wsl子系统上无法正常工作
+
+也可以在网上买服务器进行搭建，这样各个软件或者插件运行起了问题会更少
