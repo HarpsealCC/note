@@ -1,8 +1,8 @@
 /*** 
- * @FilePath: /formwork/be/src/main.cpp
+ * @FilePath: /github/harpseal/formwork/be/src/main.cpp
  * @Author: harpseal
  * @Date: 2022-06-09 15:42:52
- * @LastEditTime: 2023-01-31 17:37:31
+ * @LastEditTime: 2023-03-17 11:26:29
  * @email: 844291270@qq.com
  */
 
@@ -191,13 +191,111 @@ struct test2
 //     return 0;
 // }
 
-int fun()
+
+// template<typename T0, typename... Ts>
+// void printf2(T0 t0, Ts... ts) {
+//     std::cout << t0 << std::endl;
+//     if constexpr (sizeof...(ts) > 0) {
+//         printf2(ts...);
+//     }
+// }
+
+
+// template<typename T, typename... Ts>
+// auto printf3(T value, Ts... args) {
+//     std::cout << value << std::endl;
+//     (void) std::initializer_list<T>{([&args] {
+//         std::cout << args << std::endl;
+//     }(), value)...};
+// }
+
+
+// enum class new_enum  {
+//     value1,
+//     value2,
+//     value3 = 100,
+//     value4 = 100
+// };
+// template<typename T>
+// std::ostream& operator<<(
+//     typename std::enable_if<std::is_enum<T>::value,
+//         std::ostream>::type& stream, const T& e)
+// {
+//     return stream << static_cast<typename std::underlying_type<T>::type>(e);
+// }
+
+// int main(int argv, char* argc[])
+// {
+//     printf3(1,"1231231",0.443143,222);
+//     if (new_enum::value3 == new_enum::value4) {
+//         // 会输出
+//         std::cout << "new_enum::value3 == new_enum::value4" << std::endl;
+//     }
+//     std::cout << new_enum::value3 << std::endl;
+// }
+
+#include <atomic>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+template <int i> class A {};
+
+template <typename T> // 嗯，需要一个T
+class TypeToID    // 我要对所有的指针类型特化，所以这里就写T*
 {
-    std::cout << " 1111 ";
+public:
+    typedef T SameAsT;
+    static int const ID = 0x80000000; // 用最高位表示它是一个指针
+};
+
+template <> // 嗯，int* 已经是个具体的不能再具体的类型了，所以模板不需要额外的类型参数了
+class TypeToID<int*> // 嗯，对int*的特化。在这里呢，要把int*整体看作一个类型
+{
+public:
+    static int const ID = 0x12345678; // 给一个缺心眼的ID
+};
+
+void PrintID()
+{
+    cout << "ID of int*: " << TypeToID<int*>::ID << endl;
+}
+class Instear {
+public:
+    Instear() : num(100) {}
+    Instear operator+(const Instear& i) {
+        Instear ret;
+        ret.num = this->num + i.num;
+        return ret;
+    }
+    friend std::ostream& operator<<(std::ostream& os, const Instear& a) {
+        os << " operator << " << a.num;
+        return os;
+    }
+    Instear operator++() {  // 前缀版本
+        this->num ++;
+        return *this;
+    }
+    Instear operator++(int) {  // 后缀版本
+        Instear tmp = *this;
+        ++(*this);
+        return tmp;
+    }
+private:
+    int num;
+};
+
+// template <int val, typename T>
+// T addValue(T x) {
+//     return x + val;
+// }
+template <auto val, typename T = decltype(val)>
+T addValue(T x) {
+    return x + val;
 }
 
-int main(int argv, char* argc[])
+
+int main()
 {
-    decltype(fun) x;
-    std::cout << x << std::endl;
+    return 0;
 }

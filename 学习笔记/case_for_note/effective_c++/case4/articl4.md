@@ -45,3 +45,15 @@ ABEntry::ABEntry(const std::string& name, const std::string& address,
 
 ##不同编译单元内的non-local-static的初始化次序
 
+### static对象 ###
+所谓static对象，其寿命从被构造出来直到程序结束为止，因此stack与heap-based对象都被排除。这种对象包括global对象、定于namespace作用域内的对象、在classes内、在函数内、以及在file作用域内被声明为static的对象。
+函数内的static对象称为local static对象，其他static对象成语non-local static对象。
+### 编译单元 ###
+所谓编译单元(translation unit)是指产出单一目标文件的那些源码。基本上它是单一源码文件加上其含入的头文件。
+### 可能产生的问题 ###
+如果有两个编译单元内，各自有一个non-local static对象，其中一个编译单元内的一个non-local static对象在初始化时调用另一个编译单元内的non-local static对象，它所用到的这个对象可能尚未被初始化。
+
+c++对“定义于不同的编译单元内的non-local static对象”的初始化相对次序并无明确定义。这是有原因的：决定它们的初始化次序相当困难，非常困难，根本无解。在其中最常见形式，也就是多个编译单元内的non-local static对象经由“模板隐式具现化，implict template instantiantions形成”，不但不可能决定正确的初始化次序，甚至往往不值得寻找“可决定正确次序”的特殊情况。
+
+### 解决 ###
+使用单例初始化non-local static对象，对于多线程的情况，需要调整设计。
