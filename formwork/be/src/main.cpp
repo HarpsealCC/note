@@ -2,7 +2,7 @@
  * @FilePath: /github/harpseal/formwork/be/src/main.cpp
  * @Author: harpseal
  * @Date: 2022-06-09 15:42:52
- * @LastEditTime: 2023-03-17 11:26:29
+ * @LastEditTime: 2023-03-21 11:49:20
  * @email: 844291270@qq.com
  */
 
@@ -234,68 +234,35 @@ struct test2
 //     std::cout << new_enum::value3 << std::endl;
 // }
 
-#include <atomic>
+
 #include <iostream>
-#include <vector>
-#include <algorithm>
+#include <limits>
+#include <deque>
+template<typename T>
+constexpr bool isSigned = std::numeric_limits<T>::is_signed;
 
-template <int i> class A {};
+template<typename T, template<typename Elem,
+typename Alloc = std::allocator<Elem>> class Cont = std::deque>
+class MyStack {
 
-template <typename T> // 嗯，需要一个T
-class TypeToID    // 我要对所有的指针类型特化，所以这里就写T*
-{
-public:
-    typedef T SameAsT;
-    static int const ID = 0x80000000; // 用最高位表示它是一个指针
+template<typename, template<typename, typename>class>
+    friend class Stack;
 };
 
-template <> // 嗯，int* 已经是个具体的不能再具体的类型了，所以模板不需要额外的类型参数了
-class TypeToID<int*> // 嗯，对int*的特化。在这里呢，要把int*整体看作一个类型
-{
-public:
-    static int const ID = 0x12345678; // 给一个缺心眼的ID
-};
-
-void PrintID()
-{
-    cout << "ID of int*: " << TypeToID<int*>::ID << endl;
+template <typename T>
+void PrintV (T arg) {
+    arg = "string a";
+    std::cout << arg << std::endl;
 }
-class Instear {
-public:
-    Instear() : num(100) {}
-    Instear operator+(const Instear& i) {
-        Instear ret;
-        ret.num = this->num + i.num;
-        return ret;
-    }
-    friend std::ostream& operator<<(std::ostream& os, const Instear& a) {
-        os << " operator << " << a.num;
-        return os;
-    }
-    Instear operator++() {  // 前缀版本
-        this->num ++;
-        return *this;
-    }
-    Instear operator++(int) {  // 后缀版本
-        Instear tmp = *this;
-        ++(*this);
-        return tmp;
-    }
-private:
-    int num;
-};
-
-// template <int val, typename T>
-// T addValue(T x) {
-//     return x + val;
-// }
-template <auto val, typename T = decltype(val)>
-T addValue(T x) {
-    return x + val;
+template <typename T>
+void PrintV (const T arg) {
+    // arg = "string still const a";
+    std::cout << arg << std::endl;
 }
-
-
 int main()
 {
+    std::string const a = "string const a";
+    PrintV(a);
+    std::cout << isSigned<uint8_t> << std::endl;
     return 0;
 }
