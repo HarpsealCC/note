@@ -1,8 +1,8 @@
 /*** 
- * @FilePath: /formwork/be/src/main.cpp
+ * @FilePath: /github/harpseal/formwork/be/src/main.cpp
  * @Author: harpseal
  * @Date: 2022-06-09 15:42:52
- * @LastEditTime: 2023-01-31 17:37:31
+ * @LastEditTime: 2023-03-21 11:49:20
  * @email: 844291270@qq.com
  */
 
@@ -191,13 +191,78 @@ struct test2
 //     return 0;
 // }
 
-int fun()
-{
-    std::cout << " 1111 ";
-}
 
-int main(int argv, char* argc[])
+// template<typename T0, typename... Ts>
+// void printf2(T0 t0, Ts... ts) {
+//     std::cout << t0 << std::endl;
+//     if constexpr (sizeof...(ts) > 0) {
+//         printf2(ts...);
+//     }
+// }
+
+
+// template<typename T, typename... Ts>
+// auto printf3(T value, Ts... args) {
+//     std::cout << value << std::endl;
+//     (void) std::initializer_list<T>{([&args] {
+//         std::cout << args << std::endl;
+//     }(), value)...};
+// }
+
+
+// enum class new_enum  {
+//     value1,
+//     value2,
+//     value3 = 100,
+//     value4 = 100
+// };
+// template<typename T>
+// std::ostream& operator<<(
+//     typename std::enable_if<std::is_enum<T>::value,
+//         std::ostream>::type& stream, const T& e)
+// {
+//     return stream << static_cast<typename std::underlying_type<T>::type>(e);
+// }
+
+// int main(int argv, char* argc[])
+// {
+//     printf3(1,"1231231",0.443143,222);
+//     if (new_enum::value3 == new_enum::value4) {
+//         // 会输出
+//         std::cout << "new_enum::value3 == new_enum::value4" << std::endl;
+//     }
+//     std::cout << new_enum::value3 << std::endl;
+// }
+
+
+#include <iostream>
+#include <limits>
+#include <deque>
+template<typename T>
+constexpr bool isSigned = std::numeric_limits<T>::is_signed;
+
+template<typename T, template<typename Elem,
+typename Alloc = std::allocator<Elem>> class Cont = std::deque>
+class MyStack {
+
+template<typename, template<typename, typename>class>
+    friend class Stack;
+};
+
+template <typename T>
+void PrintV (T arg) {
+    arg = "string a";
+    std::cout << arg << std::endl;
+}
+template <typename T>
+void PrintV (const T arg) {
+    // arg = "string still const a";
+    std::cout << arg << std::endl;
+}
+int main()
 {
-    decltype(fun) x;
-    std::cout << x << std::endl;
+    std::string const a = "string const a";
+    PrintV(a);
+    std::cout << isSigned<uint8_t> << std::endl;
+    return 0;
 }

@@ -1,10 +1,10 @@
 <!--
  * @Author: your name
  * @Date: 2021-07-10 11:42:22
- * @LastEditTime: 2022-06-03 18:31:22
- * @LastEditors: lcz lcz@git.com
+ * @LastEditTime: 2023-01-09 10:38:03
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: /note/搭建VScode与github环境/vscode下载与安装.md
+ * @FilePath: /github/harpseal/搭建VScode与github环境/vscode下载与安装.md
 -->
 <!--
  *                        _oo0oo_
@@ -93,9 +93,11 @@ vscode.cdn.azure.cn <--------就是左边这个
     17、koroFileHeader  ：自动生成头文件（remote）
     18、Switcher  ：切换同名文件，如.h与.cpp之间，可以互相切换（remote）
     19、Git Graph  : 图形显示git提交记录（remote）
-
+    20、Markdown Image：方便地在 Markdown 中插入图片，支持本地、图床或对象存储（remote暂时不好使）
 
 ### 使用环境
 
 vscode可以在window、mac或者linux上运行，考虑到开发与使用的情况，我比较倾向于在window上安装vscode，但是编译与运行环境和插件安装都使用WSL子系统来进行。
 有些插件可能在wsl子系统上无法正常工作
+
+也可以在网上买服务器进行搭建，这样各个软件或者插件运行起了问题会更少
