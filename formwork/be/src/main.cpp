@@ -1,11 +1,10 @@
-/*** 
+/***
  * @FilePath: /github/harpseal/formwork/be/src/main.cpp
  * @Author: harpseal
  * @Date: 2022-06-09 15:42:52
  * @LastEditTime: 2023-03-21 11:49:20
  * @email: 844291270@qq.com
  */
-
 
 // #include <iostream>
 // #include <limits>
@@ -24,8 +23,6 @@
 //     if (T<0) os<<"-";if (T>=10 ) os<<T/10;if (T<=-10) os<<(-(T/10));
 //     return os<<( (int) (T%10) >0 ? (int) (T%10) : -(int) (T%10) ) ;
 // }
-
-
 
 // class GetSkValue {
 // public:
@@ -82,8 +79,6 @@
 
 // typedef boost::function<bool (std::string, GetSkValue&) > ThreadFunctor;
 
-
-
 // template <class F>
 // class GenerateFuncByValueType {
 // public:
@@ -107,8 +102,6 @@
 //     }
 // }
 
-
-
 // ThreadFunctor FuncGeneraterBy(Valuetype data_type, Optype op_type) {
 //     switch(data_type) {
 //         case int_type:
@@ -128,7 +121,6 @@
 //     typedef T value_type;
 // };
 
-
 // int main() {
 //     for (int i = 0; i < 1000000; i ++) {
 //         size_t need_read_filesize = 65535;
@@ -142,20 +134,19 @@
 //     return 0;
 // }
 
-
 #include <iostream>
 using namespace std;
 
 // foo 可以是成员函数或者成员对象
 char check_member_foo(...);
 template <typename T>
-auto check_member_foo(T const& t, decltype(&T::foo) p = 0)->decltype(p);
+auto check_member_foo(T const &t, decltype(&T::foo) p = 0) -> decltype(p);
 
-template<typename T>
+template <typename T>
 struct has_member_fun_or_property
 {
     static const bool value =
-    sizeof(char) != sizeof( check_member_foo( *static_cast<T*>(0) ) );
+        sizeof(char) != sizeof(check_member_foo(*static_cast<T *>(0)));
 };
 
 struct test
@@ -165,21 +156,20 @@ struct test
 
 struct test2
 {
-    //int foo;
+    // int foo;
 };
 
 // int main()
 // {
 //     cout << has_member_fun_or_property<test>::value << endl;
 //     cout << has_member_fun_or_property<test2>::value << endl;
-    
+
 //     return 0;
 // }
 
-
 // #include <iostream>
 // #include <typeinfo>
- 
+
 // int main() {
 //     int a = 1, b = 2;
 //     int *p = &a;
@@ -187,10 +177,9 @@ struct test2
 //     std::cout << "修改前b: " << b << std::endl;
 //     decl_p = 5;
 //     std::cout << "修改后b: " << b << std::endl;
- 
+
 //     return 0;
 // }
-
 
 // template<typename T0, typename... Ts>
 // void printf2(T0 t0, Ts... ts) {
@@ -200,7 +189,6 @@ struct test2
 //     }
 // }
 
-
 // template<typename T, typename... Ts>
 // auto printf3(T value, Ts... args) {
 //     std::cout << value << std::endl;
@@ -208,7 +196,6 @@ struct test2
 //         std::cout << args << std::endl;
 //     }(), value)...};
 // }
-
 
 // enum class new_enum  {
 //     value1,
@@ -234,31 +221,33 @@ struct test2
 //     std::cout << new_enum::value3 << std::endl;
 // }
 
-
 #include <iostream>
 #include <limits>
 #include <deque>
-template<typename T>
+template <typename T>
 constexpr bool isSigned = std::numeric_limits<T>::is_signed;
 
-template<typename T, template<typename Elem,
-typename Alloc = std::allocator<Elem>> class Cont = std::deque>
-class MyStack {
+template <typename T, template <typename Elem,
+                                typename Alloc = std::allocator<Elem>>
+                      class Cont = std::deque>
+class MyStack
+{
 
-template<typename, template<typename, typename>class>
+    template <typename, template <typename, typename> class>
     friend class Stack;
 };
 
 template <typename T>
-void PrintV (T arg) {
+void PrintV(T arg)
+{
     arg = "string a";
     std::cout << arg << std::endl;
 }
-template <typename T>
-void PrintV (const T arg) {
-    // arg = "string still const a";
-    std::cout << arg << std::endl;
-}
+// template <typename T>
+// void PrintV (const T arg) {
+//     // arg = "string still const a";
+//     std::cout << arg << std::endl;
+// }
 int main()
 {
     std::string const a = "string const a";
