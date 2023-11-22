@@ -120,20 +120,20 @@ int PartitionChoosePivot(vector<int> &arr, int low, int high)
     return PartitionBeginKey(arr, low, high);
 }
 
-void quick_sort_func(std::vector<int> &arr, int low, int high)
+void QuickSortFunc(std::vector<int> &arr, int low, int high)
 {
     if (low < high)
     {
         int index = PartitionBeginKey(arr, low, high);
-        quick_sort_func(arr, low, index - 1);
-        quick_sort_func(arr, index + 1, high);
+        QuickSortFunc(arr, low, index - 1);
+        QuickSortFunc(arr, index + 1, high);
     }
 }
 /**
  * @brief 如果不用递归来做的话，其实可以使用stack来模拟一个递归出来，就是把每次计算的index存起来，循环计算
  * 本质上还是个递归
  */
-void quick_sort_func_stack(std::vector<int> &arr, int low, int high)
+void QuickSortFuncByStack(std::vector<int> &arr, int low, int high)
 {
     if (low < high)
     {
@@ -161,7 +161,7 @@ int main()
 {
     std::vector<int> arr = {57, 68, 59, 52, 72, 28, 96, 33, 24};
     PrintArr(arr);
-    quick_sort_func_stack(arr, 0, arr.size() - 1);
+    QuickSortFuncByStack(arr, 0, arr.size() - 1);
     PrintArr(arr);
     return 0;
 }
