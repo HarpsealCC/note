@@ -19,14 +19,12 @@
  * </table>
  */
 
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 #include <vector>
 
-void PrintArr(const std::vector<int> &arr)
-{
-    for (auto iter : arr)
-    {
+void PrintArr(const std::vector<int>& arr) {
+    for (auto iter : arr) {
         std::cout << iter << " ";
     }
     std::cout << std::endl;
@@ -39,21 +37,17 @@ void PrintArr(const std::vector<int> &arr)
  * @param  key              待查询的值
  * @return int >=0为数据位置，-1为找不到
  */
-int BinarySearch(std::vector<int> &arr, int low, int high, int key)
-{
+int BinarySearch(std::vector<int>& arr, int low, int high, int key) {
     if (low > high)
         return -1;
     int mid = low + (high - low) / 2;
-    if (key == arr[mid])
-    {
+    if (key == arr[mid]) {
         return mid;
     }
-    else if (key < arr[mid])
-    {
+    else if (key < arr[mid]) {
         return BinarySearch(arr, low, mid - 1, key);
     }
-    else
-    {
+    else {
         return BinarySearch(arr, mid + 1, high, key);
     }
 }
@@ -63,30 +57,24 @@ int BinarySearch(std::vector<int> &arr, int low, int high, int key)
  * @param  key              待查询的值
  * @return int >=0为数据位置，-1为找不到
  */
-int BinarySearch(std::vector<int> &arr, int key)
-{
-    int low = 0;
+int BinarySearch(std::vector<int>& arr, int key) {
+    int low  = 0;
     int high = arr.size() - 1;
-    while (low <= high)
-    {
+    while (low <= high) {
         int mid = low + (high - low) / 2;
-        if (key == arr[mid])
-        {
+        if (key == arr[mid]) {
             return mid;
         }
-        else if (key < arr[mid])
-        {
+        else if (key < arr[mid]) {
             high = mid - 1;
         }
-        else
-        {
+        else {
             low = mid + 1;
         }
     }
     return -1;
 }
-int main()
-{
+int main() {
     std::vector<int> arr = {57, 68, 59, 52, 72, 28, 96, 33, 24};
     std::sort(arr.begin(), arr.end());
     PrintArr(arr);
