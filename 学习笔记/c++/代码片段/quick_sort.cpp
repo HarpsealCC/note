@@ -19,20 +19,17 @@
  * </table>
  */
 #include <iostream>
-#include <vector>
 #include <stack>
+#include <vector>
 using namespace std;
 
-void Swap(int &a, int &b)
-{
+void Swap(int& a, int& b) {
     int temp = a;
-    a = b;
-    b = temp;
+    a        = b;
+    b        = temp;
 }
-void PrintArr(const std::vector<int> &arr)
-{
-    for (auto iter : arr)
-    {
+void PrintArr(const std::vector<int>& arr) {
+    for (auto iter : arr) {
         std::cout << iter << " ";
     }
     std::cout << std::endl;
@@ -47,14 +44,11 @@ void PrintArr(const std::vector<int> &arr)
  * @param  high             数组终止下标
  * @return int key值排序后在数组中的下标
  */
-int PartitionBeginKey(vector<int> &arr, int low, int high)
-{
-    int key = arr[low];
+int PartitionBeginKey(vector<int>& arr, int low, int high) {
+    int key       = arr[low];
     int start_pos = low;
-    for (int end_pos = low + 1; end_pos <= high; end_pos++)
-    {
-        if (arr[end_pos] < key)
-        {
+    for (int end_pos = low + 1; end_pos <= high; end_pos++) {
+        if (arr[end_pos] < key) {
             start_pos++;
             Swap(arr[start_pos], arr[end_pos]);
         }
@@ -70,14 +64,11 @@ int PartitionBeginKey(vector<int> &arr, int low, int high)
  * @param  high             数组终止下标
  * @return int key值排序后在数组中的下标
  */
-int PartitionEndKey(vector<int> &arr, int low, int high)
-{
-    int key = arr[high];
+int PartitionEndKey(vector<int>& arr, int low, int high) {
+    int key       = arr[high];
     int start_pos = low;
-    for (int end_pos = low; end_pos < high; end_pos++)
-    {
-        if (arr[end_pos] < key)
-        {
+    for (int end_pos = low; end_pos < high; end_pos++) {
+        if (arr[end_pos] < key) {
             Swap(arr[start_pos], arr[end_pos]);
             start_pos++;
         }
@@ -93,75 +84,64 @@ int PartitionEndKey(vector<int> &arr, int low, int high)
  * @param  low              数组起始下标
  * @param  high             数组终止下标
  */
-void ChoosePivot(vector<int> &arr, int low, int high)
-{
+void ChoosePivot(vector<int>& arr, int low, int high) {
     int mid = low + (high - low) / 2;
-    if (arr[low] > arr[high])
-    {
+    if (arr[low] > arr[high]) {
         Swap(arr[low], arr[high]);
     }
-    if (arr[low] > arr[mid])
-    {
+    if (arr[low] > arr[mid]) {
         Swap(arr[low], arr[mid]);
     }
-    if (arr[mid] > arr[high])
-    {
+    if (arr[mid] > arr[high]) {
         Swap(arr[high], arr[mid]);
     }
     // 此时arr[low] <= arr[mid] <= arr[high]
     Swap(arr[low], arr[mid]);
 }
 /**
- * @brief 使用ChoosePivot选择之后，low所在表示的值为选择之后的值，使用PartitionBeginKey排序
+ * @brief
+ * 使用ChoosePivot选择之后，low所在表示的值为选择之后的值，使用PartitionBeginKey排序
  */
-int PartitionChoosePivot(vector<int> &arr, int low, int high)
-{
+int PartitionChoosePivot(vector<int>& arr, int low, int high) {
     ChoosePivot(arr, low, high);
     return PartitionBeginKey(arr, low, high);
 }
 
-void QuickSortFunc(std::vector<int> &arr, int low, int high)
-{
-    if (low < high)
-    {
+void QuickSortFunc(std::vector<int>& arr, int low, int high) {
+    if (low < high) {
         int index = PartitionBeginKey(arr, low, high);
         QuickSortFunc(arr, low, index - 1);
         QuickSortFunc(arr, index + 1, high);
     }
 }
 /**
- * @brief 如果不用递归来做的话，其实可以使用stack来模拟一个递归出来，就是把每次计算的index存起来，循环计算
+ * @brief
+ * 如果不用递归来做的话，其实可以使用stack来模拟一个递归出来，就是把每次计算的index存起来，循环计算
  * 本质上还是个递归
  */
-void QuickSortFuncByStack(std::vector<int> &arr, int low, int high)
-{
-    if (low < high)
-    {
+void QuickSortFuncByStack(std::vector<int>& arr, int low, int high) {
+    if (low < high) {
         std::stack<std::pair<int, int>> index_stack;
 
         index_stack.push(std::make_pair(low, high));
-        while (!index_stack.empty())
-        {
+        while (!index_stack.empty()) {
             int start_pos = index_stack.top().first;
-            int end_pos = index_stack.top().second;
+            int end_pos   = index_stack.top().second;
             index_stack.pop();
             int index = PartitionBeginKey(arr, start_pos, end_pos);
-            if (index - 1 > start_pos)
-            {
+            if (index - 1 > start_pos) {
                 index_stack.push(std::make_pair(start_pos, index - 1));
             }
-            if (index + 1 < end_pos)
-            {
+            if (index + 1 < end_pos) {
                 index_stack.push(std::make_pair(index + 1, end_pos));
             }
         }
     }
 }
-int main()
-{
+int main() {
     std::vector<int> arr = {57, 68, 59, 52, 72, 28, 96, 33, 24};
     PrintArr(arr);
-    QuickSortFuncByStack(arr, 0, arr.size() - 1);
+    QuickSortFunc(arr, 0, arr.size() - 1);
     PrintArr(arr);
     return 0;
 }
