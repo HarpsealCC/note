@@ -12,7 +12,7 @@
  * <tr><th>Date       <th>Version <th>Author
  * <tr><td>2023-11-23 <td>1.0     <td>liuchengzhuo
  * <th>Description
- * <td>用于练习一些运算符
+ * <td>用于练习一些构造函数/析构函数/运算符
  * </table>
  */
 #include <cstring>
@@ -21,7 +21,9 @@ class CMyString {
 public:
     /**
      * @brief Construct a new CMyString object
-     * 必须要注意，在pdate为空的时候需要给CMyString至少分配一个字节的内存，不然会析构函数会崩溃
+     * 必须要注意，在pdate为空的时候需要给CMyString至少分配一个字节的内存
+     * 不然 会析构函数会崩溃, << 操作符会异常输出
+     *
      * @param  pdata            My Param doc
      */
     CMyString(char* pdata = nullptr) {
@@ -40,7 +42,8 @@ public:
         strcpy(pdata_, str.pdata_);
     }
     ~CMyString() {
-        delete[] pdata_;
+        if (pdata_)
+            delete[] pdata_;
     }
 
     CMyString&           operator=(const CMyString& str);
@@ -64,7 +67,7 @@ private:
 //     return *this;
 // }
 /**
- * @brief 通用的实现方案，
+ * @brief 通用的实现方案
  */
 CMyString& CMyString::operator=(const CMyString& str) {
     if (&str != this) {
@@ -75,6 +78,9 @@ CMyString& CMyString::operator=(const CMyString& str) {
     }
     return *this;
 }
+/**
+ * @brief 需要使用友元访问私有成员
+ */
 std::ostream& operator<<(std::ostream& os, CMyString& str) {
     os << str.pdata_;
     return os;
@@ -87,5 +93,8 @@ int main() {
     std::cout << my_string2 << std::endl;
     my_string2 = my_string;
     std::cout << my_string2 << std::endl;
+    CMyString my_string3;
+    my_string3 = my_string2 = my_string;
+    std::cout << my_string3 << std::endl;
     return 0;
 }
