@@ -1,0 +1,1 @@
+find ./ -maxdepth 1 -type f -executable ! -name "clean.sh" -delete
