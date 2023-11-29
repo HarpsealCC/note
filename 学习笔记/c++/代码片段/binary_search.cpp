@@ -43,11 +43,9 @@ int BinarySearch(std::vector<int>& arr, int low, int high, int key) {
     int mid = low + (high - low) / 2;
     if (key == arr[mid]) {
         return mid;
-    }
-    else if (key < arr[mid]) {
+    } else if (key < arr[mid]) {
         return BinarySearch(arr, low, mid - 1, key);
-    }
-    else {
+    } else {
         return BinarySearch(arr, mid + 1, high, key);
     }
 }
@@ -64,11 +62,9 @@ int BinarySearch(std::vector<int>& arr, int key) {
         int mid = low + (high - low) / 2;
         if (key == arr[mid]) {
             return mid;
-        }
-        else if (key < arr[mid]) {
+        } else if (key < arr[mid]) {
             high = mid - 1;
-        }
-        else {
+        } else {
             low = mid + 1;
         }
     }
