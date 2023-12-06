@@ -125,6 +125,11 @@ git pull git@github.com:apache/impala.git
 
 可以去官网下载安装 git 工具（应该可以全选默认安装）
 安装之后需要修改记录一下 git 工具的环境变量
+在Windows环境下可以使用
+```
+where git
+```
+查找git的安装路径
 最后需要将 git 执行文件的路径配置到 setting.json 中，如
 
 ```
@@ -147,7 +152,7 @@ ssh -T git@github.com
 在进行 clone 的时候建议选择使用 ssh 的链接,如：
 
 ```
-git@github.com:HarpsealCC/note.git
+git clone git@github.com:HarpsealCC/note.git
 ```
 
 ### 可能存在的问题
