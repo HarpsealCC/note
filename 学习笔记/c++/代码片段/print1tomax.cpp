@@ -22,6 +22,10 @@
 #include <exception>
 #include <iostream>
 #include <vector>
+/**
+ * @brief 打印函数需要注意字符串的前导0的过滤
+ * @param  num              My Param doc
+ */
 void PrintNumber(char* num) {
     if (num == nullptr) {
         return;
@@ -37,6 +41,12 @@ void PrintNumber(char* num) {
     }
     printf("\t");
 }
+/**
+ * @brief 使用递归的思想，核心是模拟数字的全排列
+ * @param  number           My Param doc
+ * @param  length           My Param doc
+ * @param  index            My Param doc
+ */
 void Print1ToMaxCore(char* number, int length, int index) {
     if (index == length - 1) {
         PrintNumber(number);
