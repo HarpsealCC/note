@@ -18,7 +18,8 @@
 #include <iostream>
 #include <mutex>
 #include <typeinfo>
-template <typename T> void PrintObjName(const T& obj) {
+template <typename T>
+void PrintObjName(const T& obj) {
     std::cout << typeid(obj).name() << std::endl;
 }
 
