@@ -10,7 +10,7 @@
             "targetArchitecture": "x64",   //硬件内核架构，为64bit
             // "program": "输入程序名称，例如 ${workspaceFolder}/a.out", //这个是默认生成的样式
             // "program": "${workspaceRoot}/${fileBasenameNoExtension}", //${workspaceRoot}指的是.vscode所在的目录(绝对路径)，${fileBasenameNoExtension}指的是所运行文件不带扩展名的名称，即main.cpp是main
-            "program": "${fileDirname}/${fileBasenameNoExtension}", //调试可执行文件/程序，此处为可执行文件的路径，包括文件名字，即要执行的可执行文件的完整路径，${fileDirname}指的是所运行文件所在的目录(绝对路径)，这里和.vscode在同一目录(绝对路径)下
+            "program": "${fileDirname}/exe_${fileBasenameNoExtension}", //调试可执行文件/程序，此处为可执行文件的路径，包括文件名字，即要执行的可执行文件的完整路径，${fileDirname}指的是所运行文件所在的目录(绝对路径)，这里和.vscode在同一目录(绝对路径)下
             "args": [],     //主函数调用时传入的参数，一般为空
             "stopAtEntry": false,      //设为true时程序将暂停在程序入口处，一般设为false，是否在 main 函数处暂停执行
             "cwd": "${fileDirname}",     //调试时的工作目录，设置调试器启动的应用程序的工作目录，不是可执行程序的路径，而是所运行程序的路径，或者.vscode所在的目录(绝对路径)，且此处的cwd路径与task.json的cwd路径不一样
