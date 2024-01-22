@@ -104,14 +104,11 @@ llvm的过滤函数进行过滤;
 
 ```plantuml
 @startuml
-
 ExecNode <|-- ScanNode
 ScanNode <|-- HdfsScanNodeBase
 HdfsScanNodeBase <|-- HdfsScanNode
 HdfsScanNodeBase <|-- HdfsScanNodeMt
-
 @enduml
-
 ```
 
 ```plantuml

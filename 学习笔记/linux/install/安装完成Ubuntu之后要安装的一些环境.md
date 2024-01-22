@@ -6,42 +6,47 @@
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /note/学习笔记/linux/install/安装完成Ubuntu之后要安装的一些环境.md
 -->
+
 # **linux环境配置（持续更新）**
 
 本文主要介绍刚刚安装完成linux（Ubuntu）系统或者子系统之后需要安装哪些环境
 
 ## **c++相关的环境与配置**
 
-c/c++编译器
+### c/c++编译器
 ```
 sudo apt-get install build-essential   // gcc/g++编译器
 sudo apt install cmake  // cmake
 
 ```
-java安装
+<a name="java安装"></a>
+
+### java安装
 （一些概念：
 jre：java程序运行时候的依赖环境
 jdk：除了jre外，还有一些额外的开发编译功能）
 ```
 sudo apt install openjdk-11-jdk  // 安装java
+sudo apt install openjdk-19-jre-headless  // 也可以安装版本高一点
 ```
 
 
-代码管理
+### 代码管理
 ```
 sudo apt install subversion  // 安装svn
+// git一般自带
 ```
-性能相关
+### 性能相关
 ```
 sudo apt install sysstat   // 安装监测系统性能及效率的一组工具
 ```
 
-网络相关
+### 网络相关
 ```
 sudo apt install inetutils-traceroute  // 查询路由
 ```
 
-调试相关
+### 调试相关
 ```
 sudo apt install gdb  // 安装gdb调试工具
 ```
