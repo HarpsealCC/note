@@ -11,7 +11,16 @@
             "program": "${workspaceFolder}/学习笔记/c++/c++_template/build/exe_${fileBasenameNoExtension}",
             "args": [],
             "cwd": "${workspaceFolder}",
-            "preLaunchTask": "build with clangd", // 前置任务，可以是你的编译任务的名称
-          }
+            "preLaunchTask": "c++_template", // 前置任务，可以是你的编译任务的名称
+        },
+        {
+            "name": "c++ offer ",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/学习笔记/c++/代码片段/build/exe_${fileBasenameNoExtension}",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "c++_offer", // 前置任务，可以是你的编译任务的名称
+        }
     ]
 }

@@ -1,7 +1,7 @@
 {
     "tasks": [
         {
-            "label": "build with clangd",
+            "label": "c++_template",
             "type": "process",
             "command": "clang++",
             "args": [
@@ -9,6 +9,26 @@
                 "-g",
                 "-o",
                 "${workspaceFolder}/学习笔记/c++/c++_template/build/exe_${fileBasenameNoExtension}", // 输出到build文件夹下
+                "-Wall",
+                "-std=c++17",
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+        },
+        {
+            "label": "c++_offer",
+            "type": "process",
+            "command": "clang++",
+            "args": [
+                "${file}",
+                "-g",
+                "-o",
+                "${workspaceFolder}/学习笔记/c++/代码片段/build/exe_${fileBasenameNoExtension}",
                 "-Wall",
                 "-std=c++17",
             ],
