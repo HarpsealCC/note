@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/lcz/lcz/source/llvm-source/llvm_17_0_6_porject/include/**",
+                "/data1/workspace/liuchengzhuo/source/gcc/project/include/c++/**",
+                "${workspaceFolder}/**",
+                "/usr/include/**"
+            ],
+            "defines": [],
+            "compilerPath": "~/lcz/source/llvm-source/llvm_17_0_6_porject/bin/clang++",
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "linux-clang-x64"
+        }
+    ],
+    "version": 4
+}

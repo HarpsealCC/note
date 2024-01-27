@@ -1,0 +1,16 @@
+// .vscode/launch.json
+
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Debug with LLDB",
+        "type": "lldb",
+        "request": "launch",
+        "program": "${workspaceFolder}/build/exe_${fileBasenameNoExtension}",
+        "args": [],
+        "cwd": "${workspaceFolder}",
+        "preLaunchTask": "build with clangd", // 前置任务，可以是你的编译任务的名称
+      }
+    ]
+}
