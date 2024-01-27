@@ -11,6 +11,7 @@
             "program": "${workspaceFolder}/学习笔记/c++/c++_template/build/exe_${fileBasenameNoExtension}",
             "args": [],
             "cwd": "${workspaceFolder}",
+<<<<<<< HEAD
             "preLaunchTask": "c++_template", // 前置任务，可以是你的编译任务的名称
         },
         {
@@ -22,5 +23,9 @@
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "c++_offer", // 前置任务，可以是你的编译任务的名称
         }
+=======
+            "preLaunchTask": "build with clangd", // 前置任务，可以是你的编译任务的名称
+          }
+>>>>>>> 5fab9ba3c744bb98040ee017c99968f8578c03cc
     ]
 }
