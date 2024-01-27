@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+      {
+          "label": "build with clangd",
+          "type": "process",
+          "command": "clang++",
+          "args": [
+              "${file}",
+              "-g",
+              "-o",
+              "${workspaceFolder}/build/exe_${fileBasenameNoExtension}", // 输出到build文件夹下
+              "-Wall",
+              "-std=c++17",
+          ],
+          "group": {
+              "kind": "build",
+              "isDefault": true
+          },
+          "options": {
+              "cwd": "${fileDirname}"
+          },
+      }
+  ]
+}
