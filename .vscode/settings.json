@@ -19,4 +19,5 @@
         "-I${workspaceFolder}/", // 项目根目录
         "-I~/lcz/source/llvm-source/llvm_17_0_6_porject/include/",
     ],
+    "markdown-preview-enhanced.codeBlockTheme": "coy.css",
 }

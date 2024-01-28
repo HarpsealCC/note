@@ -81,15 +81,14 @@ vscode 可以在 window、mac 或者 linux 上运行，考虑到开发与使用�
 - **Markdown Preview Enhanced:** 强大的markdown插件，提供很多预览功能，可以将markdown文件导出为html/pdf文件，本身也提供了一些绘图功能，不过uml能力不如plantuml，详情可以参考[说明文档](https://shd101wyy.github.io/markdown-preview-enhanced/#/zh-cn/)
 - **注意：** 不必安装markdown pdf相关的插件，可以使用**Markdown Preview Enhanced export html**然后搭配浏览器插件**singlefile**保存带有uml图片的html或者直接保存成pdf，效果更好。
 
-
 #### c/c++相关
 - **C/C++:** 据说是微软自研的vscode插件，提供了c/c++的跳转，语法补全，debug调试等功能，不过有时候跳转有问题，占内存也比较大，优点是不用额外有什么配置
-- **clangd:** clang/clang++调试推荐的插件，拥有比c/c++更快的跳转，配合.clang-tidy与.clang-format文件有很好的静态分析能力，不过配置不太容易，且需要配合cmake生成的compile_commands.json文件来使用 **TODO(lcz) 添加clang-tidy clang-format说明文档**
-- **clang-format:** 如果没有使用clangd，可以安装此插件用于格式化c/c++代码风格
-- **lldb:** 搭配clangd使用，可以进行gdb调试，如果使用此插件进行调试需要在**launch.json**中修改type选项为"lldb" **TODO(lcz):补充举例**
+- **clangd:** clang/clang++调试推荐的插件，拥有比c/c++更快的跳转，配合[.clang-tidy](./c++环境搭建/clang-tidy.md)与[.clang-format](./c++环境搭建/clang-format.md)文件有很好的静态分析能力，不过配置不太容易，且需要配合cmake生成的compile_commands.json文件来使用<!-- TODO: (lcz) 补充clangd说明>
+- **clang-format:** 如果没有使用clangd，可以安装此插件用于格式化c/c++代码风格, 需要配置[.clang-format](./c++环境搭建/clang-format.md)文件
+- **lldb:** 搭配clangd使用，可以进行gdb调试，如果使用此插件进行调试需要在**launch.json**中修改type选项为"lldb"，可以参考[vscode调试c++配置](./c++环境搭建/vscode调试c++配置.md#lldb)
 - **Hex Editor:** 可以显示二进制数据，同时在gdb调试过程中也可以辅助显示
-- **cmake&cmake tools:** 常用的cmake工具，目前可以搭配**tasks.json与launch.json**进行一些小项目(demo)的快速构建与调试**TODO(lcz): 补充举例文档**
-- **Doxygen Documentation Generator:** 可以为文件，class/struct和函数快速生成注释**TODO (lcz) 单独文件描述操作**
+- **cmake&cmake tools:** 常用的cmake工具，目前可以搭配**tasks.json与launch.json**进行一些小项目(demo)的快速构建与调试<!-- TODO: (lcz)  补充举例文档-->
+- **Doxygen Documentation Generator:** 可以为文件，class/struct和函数快速生成注释<!-- TODO: (lcz)  单独文件描述操作-->
 - **Error Lens:** 在代码中提示对应的警告和错误，但是搭配clang-tidy可能可读性不是很好
 
 #### docker相关
@@ -107,4 +106,6 @@ vscode 可以在 window、mac 或者 linux 上运行，考虑到开发与使用�
 - **Stats Bar:** 实时监控服务器性能
 - **翻译:** 轻量级的翻译插件
 - **Chinese (Simplified) (简体中文):** 中文插件
-- **todo tree:** 
+- **todo tree:** 各种文件的todo注释，在markdown中使用\<!-- TODO：todo thing--\>来注释
+- **Trailing Space:** 标注不需要的空格, 使用方法：ctrl k + ctrl x 或者 ctrl shift p -> trailing whitspace
+- **CodeSnap:** 文本截图工具
