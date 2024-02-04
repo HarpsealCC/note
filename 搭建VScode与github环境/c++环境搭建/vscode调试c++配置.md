@@ -143,7 +143,7 @@ sudo apt install clang // 安装clang
 ### 建立配置文件
 
 - launch.json
-  vscode的debug功能使用析此文件，理解上应该是用于配置lldb需要调用的一些参数，可以配置多组，这样可以实现同一个目录下可以调用多种工程的debug。但是clangd与c/c++不能用
+  vscode的debug功能使用析此文件，理解上应该是用于配置lldb需要调用的一些参数，可以配置多组，这样可以实现同一个目录下可以调用多种工程的debug。但是clangd与c/c++不能同时使用
 ```
 {
     "version": "0.2.0",
@@ -181,10 +181,12 @@ program： 指定要调试的可执行文件的路径。
 args： 传递给程序的命令行参数。
 stopAtEntry： 是否在程序入口处停止。
 cwd： 调试器的当前工作目录。
-environment： 环境变量的设置。
+env: 环境变量的设置。
+e.g. "env": {"DORIS_HOME":"${workspaceFolder}",},
 externalConsole： 是否在外部控制台中运行程序。
 setupCommands： 在启动调试器之前执行的命令。
-preLaunchTask： 在启动调试器之前运行的任务，一般配合tasks.json使用，填写其label
+preLaunchTask： 在启动调试器之前运行的任务，一般配合tasks.json使用，填写其label,需要注意,task在其他终端执行,所以目前无法使用
+task进行launch的环境变量配置
 ```
 
 - tasks.json
@@ -245,3 +247,6 @@ args： 命令的参数。指定传递给命令的参数列表。
 options： 额外的选项配置，用于指定任务的执行细节。具体的选项可以因任务类型而异。
 group： 将任务分组，通常用于指定默认构建任务。包含 kind（"build"）和 isDefault（是否默认任务）。
 ```
+
+## 参考资料
+[官网对于launch.json与tasks.json一些变量的描述]https://code.visualstudio.com/docs/editor/variables-reference
