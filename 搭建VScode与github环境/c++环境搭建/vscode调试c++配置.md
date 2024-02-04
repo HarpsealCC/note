@@ -142,7 +142,7 @@ sudo apt install clang // 安装clang
 
 ### 建立配置文件
 
-- launch.json
+- **launch.json**
   vscode的debug功能使用析此文件，理解上应该是用于配置lldb需要调用的一些参数，可以配置多组，这样可以实现同一个目录下可以调用多种工程的debug。但是clangd与c/c++不能用
 ```
 {
@@ -187,7 +187,7 @@ setupCommands： 在启动调试器之前执行的命令。
 preLaunchTask： 在启动调试器之前运行的任务，一般配合tasks.json使用，填写其label
 ```
 
-- tasks.json
+- **tasks.json**
   应该是配合launch.json一起使用的，用于在launch模式下对工程进行编译，应该还可以配合cmake与build.sh脚本进行使用
 ```
 {
@@ -245,3 +245,6 @@ args： 命令的参数。指定传递给命令的参数列表。
 options： 额外的选项配置，用于指定任务的执行细节。具体的选项可以因任务类型而异。
 group： 将任务分组，通常用于指定默认构建任务。包含 kind（"build"）和 isDefault（是否默认任务）。
 ```
+
+**其他**
+**tasks.json** 可是单独使用，执行ctrl+B 就可以执行预设到tasks.json中的任务，可以执行脚本命令，也可以是启动可执行程序
