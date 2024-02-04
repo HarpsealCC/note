@@ -39,6 +39,32 @@
             "options": {
                 "cwd": "${fileDirname}"
             },
+        },
+        {
+            "label": "c++_offer_cleaner",
+            "type": "shell",
+            "command": "/bin/bash",
+            "args": ["-c", "${workspaceFolder}/学习笔记/c++/代码片段/build/clean.sh"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+        },
+        {
+            "label": "c++_template_cleaner",
+            "type": "shell",
+            "command": "/bin/bash",
+            "args": ["-c", "${workspaceFolder}/学习笔记/c++/c++_template/build/clean.sh"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "cwd": "${fileDirname}"
+            },
         }
     ],
     "version": "2.0.0"
