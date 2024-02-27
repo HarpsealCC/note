@@ -56,4 +56,52 @@ launch.json文件用于在 Visual Studio Code 中配置调试器.可以配置调
 
 
 ## 应用
-### 调试
+### attach模式调试
+```
+{
+    "version": "0.2.0",
+    "configurations": [
+        // 使用lldb attach模式 调试program
+        {
+            "name": "be clang++",
+            "type": "lldb",
+            "request": "attach",
+            "program": "${workspaceFolder}/program",
+        },
+        // 使用lldb attach模式 可以选择pid
+        {
+            "name": "pid clange++",
+            "type": "lldb",
+            "request": "attach",
+            "pid": "${command:pickProcess}",
+        },
+    ]
+}
+```
+### launch模式调试
+使用lldb launch模式 调试未启动的program
+```
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ut launch clang++",
+            "type": "lldb",
+            "request": "launch",
+            // 需要指定program的路径
+            "program": "${workspaceFolder}/be/ut_build_ASAN/test/doris_be_test",
+            // 若启动需要参数，在此配置
+            "args":[
+            "--gtest_output=xml:${workspaceFolder}/be/ut_build_ASAN/gtest_output/doris_be_test.xml",
+            "--gtest_print_time=true",
+            "--gtest_filter=CirroFile*"],
+            // 若启动需要环境变量，在此配置
+            "env": {"DORIS_HOME":"${workspaceFolder}",},
+            // 如果需要搭配tasks.json使用，在此配置label
+            "preLaunchTask": "build be ut",
+        },
+    ]
+}
+```
+
+### core文件调试
