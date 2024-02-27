@@ -44,7 +44,7 @@
 {
     "version": "2.0.0",
     "tasks": [
-        {  // 以debug模式编译整个工程
+        { // 以debug模式编译整个工程
             "label": "Build Project",
             "type": "shell",
             "command": "sh",
@@ -55,9 +55,9 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
         },
-        {  // debug模式编译be，且不编译相关的java扩展
+        { // debug模式编译be，且不编译相关的java扩展
             "label": "Build BE",
             "type": "shell",
             "command": "sh",
@@ -70,7 +70,7 @@
                 "isDefault": true
             }
         },
-        {  // clean后 debug模式编译工程
+        { // clean后 debug模式编译工程
             "label": "Rebuild Project",
             "type": "shell",
             "command": "sh",
@@ -83,50 +83,78 @@
                 "isDefault": true
             }
         },
-        {  // 启动fe
-            "label": "Start FE Daemon",
+        { // 启动fe
+            "label": "FE Start Daemon",
             "type": "shell",
             "command": "sh",
-            "args": ["-c",
-            "${workspaceFolder}/output/fe/bin/start_fe.sh --daemon && sleep 3"],
+            "args": [
+                "-c",
+                "${workspaceFolder}/output/fe/bin/start_fe.sh --daemon && sleep 3"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
         },
-        {  // 启动be
-            "label": "Start BE Daemon",
+        { // 启动be
+            "label": "BE Start Daemon",
             "type": "shell",
             "command": "sh",
-            "args": ["-c",
-            "${workspaceFolder}/output/be/bin/start_be.sh --daemon && sleep 3"],
+            "args": [
+                "-c",
+                "${workspaceFolder}/output/be/bin/start_be.sh --daemon && sleep 3"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
         },
-        {  // 停止fe
-            "label": "Stop FE Daemon",
+        { // 停止fe
+            "label": "FE Stop Daemon",
             "type": "shell",
-            "command": "${workspaceFolder}/output/fe/bin/stop_fe.sh",
+            "command": "${workspaceFolder}/output/fe/bin/stop_fe.sh  && sleep 1",
             "args": [],
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
         },
-        {  // 停止be
-            "label": "Stop BE Daemon",
+        { // 停止be
+            "label": "BE Stop Daemon",
             "type": "shell",
-            "command": "${workspaceFolder}/output/be/bin/stop_be.sh",
+            "command": "${workspaceFolder}/output/be/bin/stop_be.sh && sleep 1",
             "args": [],
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
         },
-        {  // 提交当前commit
-            "label": "Push to Origin",
+        {
+            "label": "BE Restart",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "BE Stop Daemon",
+                "BE Start Daemon"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "FE Restart",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "FE Stop Daemon",
+                "FE Start Daemon"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        { // 提交当前commit
+            "label": "Git Push to Origin",
             "type": "shell",
             "command": "git",
             "args": [
@@ -134,6 +162,7 @@
                 "-u",
                 "origin",
                 "${gitBranch}",
+                "-f",
                 "--push-option=--no-ticket-check"
             ],
             "group": {
@@ -141,71 +170,81 @@
                 "isDefault": true
             }
         },
-        {  // 编译 执行 生成coverage，带有filter
-            "label": "Run be ut",
+        { // 编译 执行 生成coverage，带有filter
+            "label": "UT build be coverage and run",
             "type": "shell",
             "command": "sh",
             "args": [
-            "${workspaceFolder}/run-be-ut.sh",
-            "--run",
-            "--coverage",
-            // "--filter=CirroFileFixLengthPlainDecoder*",
-            "--filter=CirroFile*",
-            "-j80"],
+                "${workspaceFolder}/run-be-ut.sh",
+                "--run",
+                "--coverage",
+                // "--filter=CirroFileFixLengthPlainDecoder*",
+                "--filter=CirroFile*",
+                "-j80"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "close": true
+            }
+        },
+        { // clean后 编译 执行 生成coverage，带有filter
+            "label": "UT build clean be coverage and run",
+            "type": "shell",
+            "command": "sh",
+            "args": [
+                "${workspaceFolder}/run-be-ut.sh",
+                "--run",
+                "--coverage",
+                "--filter=CirroFile*",
+                "--clean",
+                "-j80"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
         },
-        {  // clean后 编译 执行 生成coverage，带有filter
-            "label": "Run be ut clean",
-            "type": "shell",
-            "command": "sh",
-            "args": [
-            "${workspaceFolder}/run-be-ut.sh",
-            "--run",
-            "--coverage",
-            "--filter=CirroFile*",
-            "--clean",
-            "-j80"],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        },
-        {  // 生成coverage后，启动http服务，用于访问  端口号8524
+        { // 生成coverage后，启动http服务，用于访问  端口号8524
             "label": "Show be coverage html",
             "type": "shell",
             "command": "sh",
-            "args": [ "-c",
-            "cd ${workspaceFolder}/be/ut_build_ASAN/test/report/ && python -m SimpleHTTPServer 8524 && tail -f /dev/null"],
+            "args": [
+                "-c",
+                "cd ${workspaceFolder}/be/ut_build_ASAN/test/report/ && python -m SimpleHTTPServer 8524 && tail -f /dev/null"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
         },
-        {  // 执行clang format检查
-            "label": "Run Check Clang format",
-            "type": "shell",
-            "command": "sh",
-            "args": ["-c",
-            "${workspaceFolder}/build-support/check-format.sh"],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        },
-        {  // 仅编译be ut
-            "label": "build be ut",
+        { // 执行clang format检查
+            "label": "Git Run Check Clang format",
             "type": "shell",
             "command": "sh",
             "args": [
-            "${workspaceFolder}/run-be-ut.sh",
-            "-j80"],
+                "-c",
+                "${workspaceFolder}/build-support/check-format.sh"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        { // 仅编译be ut
+            "label": "UT build be",
+            "type": "shell",
+            "command": "sh",
+            "args": [
+                "${workspaceFolder}/run-be-ut.sh",
+                "-j80"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
         },
     ]
 }

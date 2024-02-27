@@ -87,7 +87,7 @@ vscode 可以在 window、mac 或者 linux 上运行，考虑到开发与使用�
 - **clang-format:** 如果没有使用clangd，可以安装此插件用于格式化c/c++代码风格, 需要配置[.clang-format](./c++环境搭建/clang-format.md)文件
 - **lldb:** 搭配clangd使用，可以进行gdb调试，如果使用此插件进行调试需要在**launch.json**中修改type选项为"lldb"，可以参考[vscode调试c++配置](./c++环境搭建/vscode调试c++配置.md#lldb)
 - **Hex Editor:** 可以显示二进制数据，同时在gdb调试过程中也可以辅助显示
-- **cmake&cmake tools:** 常用的cmake工具，目前可以搭配**tasks.json与launch.json**进行一些小项目(demo)的快速构建与调试<!-- TODO: (lcz)  补充举例文档-->
+- **cmake&cmake tools:** 常用的cmake工具，目前可以搭配**tasks.json与launch.json**进行一些小项目(demo)的快速构建与调试 可以参考[task.json介绍](./c++环境搭建/task_json介绍.md)<!-- TODO: (lcz)  补充举例文档-->
 - **Doxygen Documentation Generator:** 可以为文件，class/struct和函数快速生成注释<!-- TODO: (lcz)  单独文件描述操作-->
 - **Error Lens:** 在代码中提示对应的警告和错误，但是搭配clang-tidy可能可读性不是很好
 
