@@ -105,3 +105,26 @@ launch.json文件用于在 Visual Studio Code 中配置调试器.可以配置调
 ```
 
 ### core文件调试
+使用以下的配置可以使用lldb调试core文件
+```
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Open a core dump",
+            "type": "lldb",
+            "request": "custom",
+            "initCommands": [
+                "target create -c ${input:coreFileName} ${workspaceFolder}/output/be/lib/doris_be"
+            ]
+        },
+    ],
+    "inputs": [
+        {
+            "id": "coreFileName",
+            "type": "promptString",
+            "description": "Enter core file path"
+        }
+    ]
+}
+```
