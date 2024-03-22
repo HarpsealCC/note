@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug c++ templates",
+            "name": "Debug c++ templates clang",
             "type": "lldb",
             "request": "launch",
             "program": "${workspaceFolder}/学习笔记/c++/c++_template/build/exe_${fileBasenameNoExtension}",

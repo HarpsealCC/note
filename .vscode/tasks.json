@@ -7,18 +7,16 @@
             "args": [
                 "${file}",
                 "-g",
+                "-pthread",
                 "-o",
-                "${workspaceFolder}/学习笔记/c++/c++_template/build/exe_${fileBasenameNoExtension}", // 输出到build文件夹下
+                "${workspaceFolder}/学习笔记/c++/c++_template/build/exe_${fileBasenameNoExtension}",
                 "-Wall",
-                "-std=c++17",
+                "-std=c++17"
             ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "group": "build",
             "options": {
                 "cwd": "${fileDirname}"
-            },
+            }
         },
         {
             "label": "c++_offer",
@@ -27,44 +25,42 @@
             "args": [
                 "${file}",
                 "-g",
+                "-pthread",
                 "-o",
                 "${workspaceFolder}/学习笔记/c++/代码片段/build/exe_${fileBasenameNoExtension}",
                 "-Wall",
-                "-std=c++17",
+                "-std=c++17"
             ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "group": "build",
             "options": {
                 "cwd": "${fileDirname}"
-            },
+            }
         },
         {
             "label": "c++_offer_cleaner",
             "type": "shell",
             "command": "/bin/bash",
-            "args": ["-c", "${workspaceFolder}/学习笔记/c++/代码片段/build/clean.sh"],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "args": [
+                "-c",
+                "${workspaceFolder}/学习笔记/c++/代码片段/build/clean.sh"
+            ],
+            "group": "build",
             "options": {
                 "cwd": "${fileDirname}"
-            },
+            }
         },
         {
             "label": "c++_template_cleaner",
             "type": "shell",
             "command": "/bin/bash",
-            "args": ["-c", "${workspaceFolder}/学习笔记/c++/c++_template/build/clean.sh"],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "args": [
+                "-c",
+                "${workspaceFolder}/学习笔记/c++/c++_template/build/clean.sh"
+            ],
+            "group": "build",
             "options": {
                 "cwd": "${fileDirname}"
-            },
+            }
         }
     ],
     "version": "2.0.0"
