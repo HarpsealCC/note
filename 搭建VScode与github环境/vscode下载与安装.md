@@ -98,6 +98,7 @@ vscode 可以在 window、mac 或者 linux 上运行，考虑到开发与使用�
 #### git相关
 - **gitlens:** 目前用来提示代码的提交信息和快速切换分支，只能使用基础功能，额外功能需要收费
 - **git graph:** 用来图形化显示git的分支情况
+- **VSCode Git Commit Message:** 可以自定义git提交信息的格式与提醒，参考setting.json中自定义
 
 #### 其他
 - **Bookmarks:** 书签

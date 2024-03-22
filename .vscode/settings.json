@@ -19,5 +19,27 @@
         "-I${workspaceFolder}/", // 项目根目录
         "-I~/lcz/source/llvm-source/llvm_17_0_6_porject/include/",
     ],
-    "markdown-preview-enhanced.codeBlockTheme": "coy.css",
+    "vscodeGitCommit.insertMode": "Replace",
+    "vscodeGitCommit.variables": {
+        "type": [
+            {
+                "label": "fix",
+                "detail": "修复bug"
+            },
+            {
+                "label": "feature",
+                "detail": "新功能"
+            },
+            {
+                "label": "docs",
+                "detail": "添加说明"
+            }
+        ]
+    },
+    "vscodeGitCommit.template": [
+          "[{type}]({moudule}) {message}"
+    ],
+    "vscodeGitCommit.variablesDisplayTitles": {
+        "moudule": " "
+    }
 }
