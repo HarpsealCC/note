@@ -28,6 +28,8 @@ void PrintObjName(const T& obj) {
  */
 class Singleton1 {
 public:
+    Singleton1(const Singleton1&)                   = delete;
+    Singleton1&        operator=(const Singleton1&) = delete;
     static Singleton1& getInstance() {
         static Singleton1* instance = nullptr;
         if (nullptr == instance) {
@@ -38,29 +40,30 @@ public:
 
 private:
     Singleton1() {}
-    Singleton1(const Singleton1&)            = delete;
-    Singleton1& operator=(const Singleton1&) = delete;
 };
 /**
  * @brief 饿汉模式的单例，在类加载的时候才创建，资源会浪费的
  */
 class Singleton2 {
 public:
+    Singleton2(const Singleton2&)                   = delete;
+    Singleton2&        operator=(const Singleton2&) = delete;
     static Singleton2& getInstance() {
-        static Singleton2 instance;
         return instance;
     }
 
 private:
+    static Singleton2 instance;
     Singleton2() {}
-    Singleton2(const Singleton2&)            = delete;
-    Singleton2& operator=(const Singleton2&) = delete;
 };
+Singleton2 Singleton2::instance;
 /**
  * @brief 双重检查锁模式，兼顾并发与资源情况
  */
 class Singleton3 {
 public:
+    Singleton3(const Singleton3&)                   = delete;
+    Singleton3&        operator=(const Singleton3&) = delete;
     static Singleton3& getInstance() {
         static std::mutex  mux;
         static Singleton3* instance = nullptr;
@@ -77,11 +80,25 @@ public:
 
 private:
     Singleton3() {}
-    Singleton3(const Singleton3&)            = delete;
-    Singleton3& operator=(const Singleton3&) = delete;
+};
+/**
+ * @brief Meyers单例，c++11之后最普遍的单例模式
+ */
+class Singleton4 {
+public:
+    Singleton4(const Singleton4&)                   = delete;
+    Singleton4&        operator=(const Singleton4&) = delete;
+    static Singleton4& getInstance() {
+        static Singleton4 instance;
+        return instance;
+    }
+
+private:
+    Singleton4() {}
 };
 int main() {
     PrintObjName(Singleton1::getInstance());
     PrintObjName(Singleton2::getInstance());
     PrintObjName(Singleton3::getInstance());
+    PrintObjName(Singleton4::getInstance());
 }
