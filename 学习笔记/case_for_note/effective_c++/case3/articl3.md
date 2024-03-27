@@ -1,5 +1,5 @@
-##const 修饰常量
-###普通类型const
+## const 修饰常量
+### 普通类型const
 ```
 char greeting[] = "Hello";
 char* p = greeting;  // non-const pointer, non-const data
@@ -12,7 +12,7 @@ const char* const p = greeting;  // const pointer, const data
 同理，将char* const p转为* const p，p为指针，就是指针不变（const point）
 
 
-###迭代器类型const
+### 迭代器类型const
 ```
 std::vector<int> vec(10);
 std::cout << "size " << vec.size() << std::endl;
@@ -30,8 +30,8 @@ const std::vector<int>::iterator iter 将iterator去掉，iter为指针，因此
 至于const_iterator没什么歧义，就认为它是值不变的指针就可以
 
 
-##const 修饰函数声明
-###const 修饰返回值
+## const 修饰函数声明
+### const 修饰返回值
 
 const修饰返回值可以有效防止用户使用函数不当导致的诡异问题
 ```
@@ -49,12 +49,13 @@ Rational operator* (const Rational& lhs, const Rational& rhs) {
 [^注1]:*如果一个函数的返回值为内置类型，那么改动函数返回值不会合法,原因未知*
 
 
-###const 修饰参数
+### const 修饰参数
 ```
-参数使用const修饰是个良好的编程习惯，一方面是对如何使用参数有理解，能够明确哪些参数是需要修改，哪些是不能被修改的，另一方面是能避免一些模糊的错误，尤其是在调试接口的时候，一旦出现莫名其妙的问题，首先可以排除是由于参数被修改引起的。
+参数使用const修饰是个良好的编程习惯，一方面是对如何使用参数有理解，能够明确哪些参数是需要修改，哪些是不能被修改的，
+另一方面是能避免一些模糊的错误，尤其是在调试接口的时候，一旦出现莫名其妙的问题，首先可以排除是由于参数被修改引起的。
 ```
 
-###const 修饰成员函数
+### const 修饰成员函数
 ```
 将const添加到成员函数上的目的就是，为了确认该成员函数可作用于const对象上。
 两个成员函数如果只在常量性（有没有const）不同，是可以被重载的。
@@ -74,7 +75,7 @@ char* pc = (char*)&ctb[0];  // 书里不用进行强转，但是实际会报错
 
 ```
 
-###const与non-const成员函数应避免重复
+### const与non-const成员函数应避免重复
 ```
 良好的风格应该是用const成员函数来实现非const成员函数的功能。
 虽然转型不是一件好事儿，但是在消除重复代码上，还是可以做个妥协的。
