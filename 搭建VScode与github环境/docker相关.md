@@ -1,7 +1,7 @@
 # docker相关
-
+<!-- TODO: (lcz)  需要继续完善-->
 ## docker compose
-示例： 使用doris:latest image 启动可以编译调试的docker容器
+示例： 使用doris:latest image 启动可以编译调试的docker容器·
 ```
 version: '3.4'
 services:
