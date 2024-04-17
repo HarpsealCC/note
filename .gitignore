@@ -29,4 +29,5 @@ ut/
 !*.json
 !*.md
 !.clang-format
+!.clang-tidy
 !.gitignore
