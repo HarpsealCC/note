@@ -14,6 +14,16 @@ TODO 整理内网穿透文档
 
 2024年4月19日16:57:04
 TODO 调研一下doris be的.out文件中生成dump信息的方案， 见doris的signal_handler.h
+[信号](https://www.xiaolincoding.com/os/4_process/process_commu.html#%E4%BF%A1%E5%8F%B7)
 
 2024年4月22日17:57:26
 TODO 调研一下doris的[性能分析方案](https://doris.apache.org/zh-CN/community/developer-guide/debug-tool/)
+[perf资料](https://blog.csdn.net/weixin_38428439/article/details/121525704)
+
+2024年4月24日10:47:20
+TODO 学习进程知识[进程](https://www.xiaolincoding.com/os/4_process/process_base.html#%E8%BF%9B%E7%A8%8B%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2)
+
+~~TODO 记录java配置环境~~
+
+2024年4月25日10:34:10
+TODO 学习SIMD相关知识
