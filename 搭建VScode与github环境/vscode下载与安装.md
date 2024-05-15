@@ -79,7 +79,7 @@ vscode 可以在 window、mac 或者 linux 上运行，考虑到开发与使用�
 - **Markdown All in One:** 已知的可以提供自动生成目录的功能
 - **Markdown Plantuml Preview:** 可以在markdown文件中显示plant uml图, 需要配置[markdown-preview-enhanced.plantumlJarPath](./安装与配置plantuml相关环境.md)
 - **Markdown Preview Enhanced:** 强大的markdown插件，提供很多预览功能，可以将markdown文件导出为html/pdf文件，本身也提供了一些绘图功能，不过uml能力不如plantuml，详情可以参考[说明文档](https://shd101wyy.github.io/markdown-preview-enhanced/#/zh-cn/)
-- **注意：** 不必安装markdown pdf相关的插件，可以使用**Markdown Preview Enhanced export html**然后搭配浏览器插件**singlefile**保存带有uml图片的html或者直接保存成pdf，效果更好。
+- **注意：** 不必安装markdown pdf相关的插件，可以使用**Markdown Preview Enhanced export html**然后搭配浏览器插件**singlefile**保存带有uml图片的html或者直接保存成pdf，效果更好。**singlefile**插件只能保存http服务器上的html文件，本地的无法保存，因此需要启动一个http服务
 
 #### c/c++相关
 - **C/C++:** 据说是微软自研的vscode插件，提供了c/c++的跳转，语法补全，debug调试等功能，不过有时候跳转有问题，占内存也比较大，优点是不用额外有什么配置
