@@ -23,7 +23,15 @@
       - [索引读取](#索引读取-2)
       - [索引使用](#索引使用-2)
     - [Bitmap 索引](#bitmap-索引)
+      - [索引概述](#索引概述-3)
+      - [索引生成](#索引生成-3)
+      - [索引读取](#索引读取-3)
+      - [索引使用](#索引使用-3)
     - [Bloom Filter 索引](#bloom-filter-索引)
+      - [索引概述](#索引概述-4)
+      - [索引生成](#索引生成-4)
+      - [索引读取](#索引读取-4)
+      - [索引使用](#索引使用-4)
   - [参考资料](#参考资料)
 
 
@@ -375,9 +383,112 @@ keyrange为(10000,10002)对一个keyrange
 - 下界值同样根据步骤获取lower_row_id，则根据前缀索引过滤出有效行数为lower_row_id~upper_row_id，为_row_bitmap
 
 ### Bitmap 索引
-    TODO
+#### 索引概述
+位图（Bitmap）索引，对索引列全列数据采用kv的存储结构，其中key为DictColumn，存放数据列的字典；value为BitMapColumn，将rowid以Roaring 编码后进行存放。
+![Alt text](./image/image-19.png)
+在footer中存储格式如下
+![Alt text](./image/image-20.png)
+BitmapIndex 的 meta 信息同样存放在 SegmentFootPB 中，BitmapIndex 包含了三部分，BitMap 的类型、字典信息 DictColumn、位图索引数据信息 BitMapColumn。其中 DictColumn、BitMapColumn 都对应 IndexedColumnData 结构，分别存放了字典数据和索引数据的 Page 地址 offset、大小 size。这里同样做了二级 page 的优化，不再具体阐述。
+这里与其他索引存储结构有差异的地方是 DictColumn 字典数据进行了 **LZ4F** 压缩，在记录二级 Page 偏移时存放的是 Data Page 中的第一个值。
+
+**需要注意，最新版本的doris可能放弃对bitmap的支持**
+#### 索引生成
+数据写入阶段
+```plantuml
+@startuml
+ScalarColumnWriter -> ScalarColumnWriter: append_data_in_current_page()
+alt if need bit map
+    ScalarColumnWriter --> BitmapIndexWriter: add_values() 批量数据加载
+    alt if key exit
+        BitmapIndexWriter --> MemoryIndexType : add rowid in roaring
+    else
+        BitmapIndexWriter --> MemoryIndexType : add key and roaring
+    end
+end
+
+ScalarColumnWriter -> ScalarColumnWriter: append_nulls()
+alt if need bit map
+    ScalarColumnWriter --> BitmapIndexWriter: add_nulls()
+    BitmapIndexWriter --> Roaring : _null_bitmap add roaring
+end
+== finish ==
+ScalarColumnWriter -> ScalarColumnWriter: write_bit_map
+alt if need bit map
+    ScalarColumnWriter --> BitmapIndexWriterImpl :finish()
+    BitmapIndexWriterImpl --> ColumnIndexMetaPB :  write dictionary
+    BitmapIndexWriterImpl --> ColumnIndexMetaPB : write bitmaps
+end
+@enduml
+```
+#### 索引读取
+```plantuml
+@startuml
+ColumnReader -> ColumnReader: _load_zone_map_index()
+ColumnReader --> BitmapIndexReader: load()
+BitmapIndexReader --> BitmapIndexReader : _load()
+BitmapIndexReader --> IndexedColumnReader: read dictionary
+BitmapIndexReader --> IndexedColumnReader: read bitmaps
+@enduml
+```
+
+#### 索引使用
+在数据查询时，对于区分度不大，列的基数比较小的数据列，可以采用位图索引进行优化。比如，性别，婚姻，地理信息等。可以支持一般的过滤条件
 ### Bloom Filter 索引
-    TODO
+#### 索引概述
+当一些字段不能利用 Short Key Index 并且字段存在区分度比较大时，Doris 提供了 BloomFilter 索引。
+BloomFilter 按 Page 粒度生成，在数据写入一个完整的 Page 时，Doris 会根据 Hash 策略同时生成这个 Page 的 BloomFilter 索引数据。目前 bloom 过滤器不支持 tinyint/hll/float/double 类型，其他类型均已支持。使用时需要在 PROPERTIES 中指定 bloom_filter_columns 要使用 BloomFilter 索引的字段。
+
+![Alt text](image/image-21.png)
+BloomFilterIndex 信息存放了生产的 Hash 策略、Hash 算法和 BloomFilter 过对应的数据 Page 信息。Hash 算法采用了 HASH_MURMUR3，Hash 策略采用了 BlockSplitBloomFilter 分块实现策略，期望的误判率 fpp 默认配置为 0.05。
+#### 索引生成
+数据写入阶段
+```plantuml
+@startuml
+ScalarColumnWriter -> ScalarColumnWriter: append_data_in_current_page()
+alt if need bloom
+    ScalarColumnWriter --> BloomFilterIndexWriterImpl: add_values() 批量数据加载
+    BitmapIndexWriter --> ValueDict : add value in set
+end
+
+ScalarColumnWriter -> ScalarColumnWriter: append_nulls()
+alt if need bloom
+    ScalarColumnWriter --> BloomFilterIndexWriterImpl: has null is true
+end
+== flush ==
+ScalarColumnWriter -> ScalarColumnWriter: write_bit_map
+alt if need bloom
+    ScalarColumnWriter --> BitmapIndexWriterImpl :flush()
+    BitmapIndexWriterImpl --> BloomFilter :  create
+    alt create normal bloom
+        BloomFilter --> BlockSplitBloomFilter
+    else
+        BloomFilter --> NGramBloomFilter
+    BitmapIndexWriterImpl --> BloomFilter : init
+end
+
+== finish ==
+ScalarColumnWriter -> ScalarColumnWriter: write_bit_map
+alt if need bloom
+    ScalarColumnWriter --> BitmapIndexWriterImpl :finish()
+    BitmapIndexWriterImpl --> ColumnIndexMetaPB : writer bloom value
+end
+
+@enduml
+```
+#### 索引读取
+```plantuml
+@startuml
+ColumnReader -> ColumnReader: _load_zone_map_index()
+ColumnReader --> BloomFilterIndexReader: load()
+BloomFilterIndexReader --> BloomFilterIndexReader : _load()
+BloomFilterIndexReader --> IndexedColumnReader:  read_bloom_filter
+@enduml
+```
+
+#### 索引使用
+在数据查询时，查询条件在设置有 bloom 过滤器的字段进行过滤，当 bloom 过滤器没有命中时表示该 Page 中没有该数据，这样可以减少要扫描的 page 数量。
+不过bloomfilter具有假阳性, 所以过滤结果仅能作为参考。
+在较新的版本中还提供NGramBloomFilter，针对字符串类型进行优化
 ###　倒排索引（inverted index）
     TODO
 ## 参考资料
