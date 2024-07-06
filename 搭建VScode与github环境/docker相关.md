@@ -5,9 +5,9 @@
 ```
 version: '3.4'
 services:
-  olap-3.5:
-    container_name: lcz-olap-3.5
-    image: 172.16.44.50:2345/doris:latest
+  doris-release2.1.3:
+    container_name: doris-release2.1.3
+    image: registry.cn-hangzhou.aliyuncs.com/harpseal-images/doris:build-env-for-2.0
     network_mode: "host"
     cap_add:
       - SYS_PTRACE
@@ -17,13 +17,9 @@ services:
     environment:
       - TZ=Asia/Shanghai
     volumes:
-      - /home/lcz/.ssh:/root/.ssh
-      - /home/lcz/.bashrc:/root/.bashrc
-      - /home/lcz/.vscode-server:/root/.vscode-server
-      - /data09/workspace/lcz/3.5:/root/3.5
-      - /data09/workspace/lcz/.m2:/root/.m2
-      - /data09/workspace/lcz/jdbc_drivers:/root/3.5/output/be/jdbc_drivers
-      - /data09/workspace/lcz/settings.xml:/usr/share/maven/conf/settings.xml
+      - /home/harpseal/.ssh:/root/.ssh
+      - /home/harpseal/github/doris:/root/doris
+      - /home/harpseal/.m2:/root/.m2
       - /etc/localtime:/etc/localtime:ro
     working_dir: /root/3.5
     command: /bin/bash -c "\
@@ -43,3 +39,40 @@ services:
       rm -rf /root/glibc-2.18* /var/cache/yum && \
       tail -f /dev/null"
 ```
+
+## docker pull 超时报错 "error pulling image configuration..."
+
+问题： 使用docker拉取服务时出现报错
+```
+error pulling image configuration: download failed after attempts=6: dial tcp 31.13.83.34:443: i/o timeout
+```
+
+解决方案：
+```
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://yxzrazem.mirror.aliyuncs.com"]
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
+
+## Ubuntu安装docker(APT安装)
+
+https://zhuanlan.zhihu.com/p/693926230
+
+## docker迁移安装路径
+
+https://www.cnblogs.com/chenss15060100790/p/18202920
+
+wsl上目前有backingFsBlockDev文件无法迁移
+
+## 解决docker无法正常pull 2024年6月13日
+可能是被墙了，导致此时docker镜像无法正常pull，可以使用方法
+https://github.com/bogeit/docker_image_pusher
+进行操作
+视频链接
+https://t.bilibili.com/942173077475688457?share_source=pc_native
