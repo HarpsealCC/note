@@ -7,20 +7,73 @@
  * @FilePath: /note/学习笔记/linux/install/安装完成Ubuntu之后要安装的一些环境.md
 -->
 
-# **linux环境配置（持续更新）**
+# linux环境配置（持续更新）
 
 本文主要介绍刚刚安装完成linux（Ubuntu）系统或者子系统之后需要安装哪些环境
 
-## **c++相关的环境与配置**
+## 软件安装
+
+### 更换源
+见[更换源](../config/更换源.md)
+
+### 安装ssh
+```
+sudo apt install -y openssh-server
+```
+### 安装net-tools
+```
+sudo apt install net-tools
+```
+
+### 安装git
+```
+sudo apt-get install git
+```
+
+### 配置github520
+安装
+```
+sudo apt install nscd
+```
+访问[GitHub520](https://github.com/521xueweihan/GitHub520),将内容粘贴到`/etc/hosts`中
+重启
+```
+sudo /etc/init.d/nscd restart
+```
+
+## c++相关的环境与配置
 
 ### c/c++编译器
+#### gcc && g++
 ```
 sudo apt-get install build-essential   // gcc/g++编译器
-sudo apt install cmake  // cmake
+```
 
+#### clang && clang++
+llvm中包含clang && clang++可以直接安装llvm，有两种方法
+- 方法1：直接安装默认版本，不过ubuntu默认安装版本为14
+```
+sudo apt update && sudo apt upgrade
+sudo apt install clang
+```
+- 方法2：可以选择安装指定版本，此方法只在debian与ubuntu系统可用
+```
+wget https://apt.llvm.org/llvm.sh
+chmod +x llvm.sh
+sudo ./llvm.sh 18  // sudo ./llvm.sh <版本号>
+
+sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-18 100  // 设为默认编译器
+sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-18 100  // 设为默认编译器
+
+clang --version
+```
+### cmake
+```
+sudo apt install cmake  // cmake
 ```
 <a name="java安装"></a>
 
+## java相关的环境与配置
 ### java安装
 （一些概念：
 jre：java程序运行时候的依赖环境
@@ -29,6 +82,8 @@ jdk：除了jre外，还有一些额外的开发编译功能）
 sudo apt install openjdk-11-jdk  // 安装java
 sudo apt install openjdk-19-jre-headless  // 也可以安装版本高一点
 ```
+### 更新maven的setting.xml
+使用[setting.xml](./settings.txt)内容，替换`.m2/setting.xml`中的内容
 
 
 ### 代码管理
@@ -52,7 +107,7 @@ sudo apt install gdb  // 安装gdb调试工具
 ```
 pstack为依托于gdb的一个脚本，安装了gdb后，ubuntu环境可能没有这个脚本，需要
 ```
-vi /usr/bin/pstack  
+vi /usr/bin/pstack
 ```
 将下面的脚本内容复制到/usr/bin/pstack中，并赋予权限 **目前pstack在ubuntu中只能使用sudo pstack使用**
 ```
