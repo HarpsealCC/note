@@ -78,6 +78,7 @@ CMyString& CMyString::operator=(const CMyString& str) {
     }
     return *this;
 }
+
 /**
  * @brief 需要使用友元访问私有成员
  */
