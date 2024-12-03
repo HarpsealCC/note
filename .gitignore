@@ -31,3 +31,4 @@ ut/
 !.clang-format
 !.clang-tidy
 !.gitignore
+!*.pdf
