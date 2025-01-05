@@ -32,3 +32,4 @@ ut/
 !.clang-tidy
 !.gitignore
 !*.pdf
+!makefile
