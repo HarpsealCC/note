@@ -16,9 +16,9 @@
 ## 2. 字体
 
 ```markdown
-**加粗**  
-*斜体*  
-~~删除线~~  
+**加粗**
+*斜体*
+~~删除线~~
 `行内代码`
 ```
 
@@ -40,7 +40,7 @@
 ## 4. 链接与图片
 
 ```markdown
-[GitHub](https://github.com)  
+[GitHub](https://github.com)
 ![图片示例](https://example.com/image.png)
 ```
 
