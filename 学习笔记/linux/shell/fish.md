@@ -70,3 +70,8 @@ curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install 
 可以在配置文件中固化常用的缩写
 
 类似的，可以使用`help abbr`在浏览器中打开窗口进行手册查阅
+
+### 资料
+[官方手册](https://fishshell.com/docs/current/interactive.html#shared-bindings)
+
+[简介视频](https://www.bilibili.com/video/BV1dfRVYGEPz?t=1.0)
